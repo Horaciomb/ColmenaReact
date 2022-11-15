@@ -1,0 +1,90 @@
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import BarChart from './BarChart'
+import React, { useState } from 'react';
+import {UserData} from './Data'
+import axios from 'axios';
+
+function FormKPI(){
+    const baseUrl = `${process.env.REACT_APP_API_URL}/Kpis`;
+
+
+const [cuerpo,setCuerpo]=useState({
+    EmpresaId:'1',FechaInicio:'',FechaFin:''
+});
+    const [userData, setUserData] = useState({
+        labels: UserData.map((data) => data.year),
+        datasets: [
+        {
+            label: "Users Gained",
+            data: UserData.map((data) => data.userGain),
+            backgroundColor: [
+            "rgba(75,192,192,1)",
+            "#ecf0f1",
+            "#50AF95",
+            "#f3ba2f",
+            "#2a71d0",
+            ],
+            borderColor: "black",
+            borderWidth: 2,
+        },
+        ],
+    });
+
+const handleChange=e=>{
+    const {name,value}=e.target;
+    setCuerpo({
+        ...cuerpo,
+        [name]:value
+    });
+    console.log(cuerpo);
+};
+const postCuerpo=e=>{
+    e.preventDefault();
+    console.log(cuerpo);
+    
+    axios
+    .post(baseUrl,cuerpo)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+};
+return(
+    <>
+    <Form>
+        <Row>
+            <Col  className="my-1">
+                <Form.Group className="mb-3">
+                    <Form.Label>Empresa seleccionada</Form.Label>
+                    <Form.Control placeholder="Banca de Talentos S.R.L"  disabled />
+                </Form.Group>
+            </Col>                         
+            <Col>
+                <Form.Group className="mb-3" controlId="formBasicFechaInicio">
+                    <Form.Label>Fecha de inicio</Form.Label>
+                    <Form.Control type="date" value={cuerpo.FechaInicio} onChange={handleChange} name="FechaInicio"/>
+                </Form.Group>
+            </Col>
+            <Col>
+                <Form.Group className="mb-3" controlId="formBasicFechaFin">
+                    <Form.Label>Fecha de fin</Form.Label>
+                    <Form.Control type="date" value={cuerpo.FechaFin} onChange={handleChange} name="FechaFin" />
+                </Form.Group>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <Button variant="success"  onClick={postCuerpo}>
+                    Generar
+                </Button> 
+            </Col>    
+        </Row>
+    </Form>
+    <div style={{ width: 700 }}>
+        <BarChart chartData={userData} />
+      </div>
+    </>
+    );
+}
+export default FormKPI;

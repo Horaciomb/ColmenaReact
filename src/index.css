@@ -1,0 +1,19 @@
+a { cursor: pointer; }
+
+.app-container {
+    min-height: 350px;
+    
+
+}
+
+.fondo-degradado {
+    background: rgba(0,55,100,1);
+    background: -moz-linear-gradient(top, rgba(0,55,100,1) 0%, rgba(149,176,206,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0,55,100,1)), color-stop(100%, rgba(149,176,206,1)));
+    background: -webkit-linear-gradient(top, rgba(0,55,100,1) 0%, rgba(149,176,206,1) 100%);
+    background: -o-linear-gradient(top, rgba(0,55,100,1) 0%, rgba(149,176,206,1) 100%);
+    background: -ms-linear-gradient(top, rgba(0,55,100,1) 0%, rgba(149,176,206,1) 100%);
+    background: linear-gradient(to bottom, rgba(0,55,100,1) 0%, rgba(149,176,206,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#003764', endColorstr='#95b0ce', GradientType=0 );
+    
+}

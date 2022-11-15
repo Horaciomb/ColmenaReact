@@ -1,0 +1,14 @@
+Pagos
+    PagoSueldo
+    PagoAguinaldos
+    PagoPrimas
+    PagoFiniquito
+    GeneraBoletaPagos
+Planillas
+    PlanillasCSS
+    PlanillaAFP
+    PlanillaTributaria
+    PlanillaTrimestrales
+    GenerarReporte
+Novedaes
+    IncrementoSalarial

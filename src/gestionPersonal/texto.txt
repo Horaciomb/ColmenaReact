@@ -1,0 +1,19 @@
+Gestion de Personal
+
+Datos Maestros de Personal
+    Gestionar Personas
+    Gestionar AFP
+    Gestionar Bancos
+    Gestionar Institución
+    Gestionar Experiencia Laboral
+    Gestionar Documentos
+    Gestionar Datos Contacto
+
+Datos Maestros Empleado
+    Gestionar Empleado
+    Asignar Cargo
+    Gestionar Seguro
+    Gestionar RC-IVA
+    Gestionar Ingresos
+    Gestionar Descuentos
+    Gestionar Subsidios
