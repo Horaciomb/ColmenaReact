@@ -14,7 +14,7 @@ function Home() {
     return (
         <div className="p-4">
             <div className="container  ">
-                <h1 >¡Hola {auth?.username}!</h1>
+                <h1 >¡Hola {auth?.username} - {auth?.rol}!</h1>
                 <p>Bienvenido a Colmena</p>
                 
                 <GrillaCartas></GrillaCartas>

@@ -23,7 +23,7 @@ function Login() {
 
     return (
         <div className="card m-3">
-            <h4 className="card-header">Login</h4>
+            <h4 className="card-header">Iniciar Sesión</h4>
             <div className="card-body">
                 <form onSubmit={handleSubmit(userActions.login)}>
                     <div className="form-group">
@@ -32,13 +32,13 @@ function Login() {
                         <div className="invalid-feedback">{errors.username?.message}</div>
                     </div>
                     <div className="form-group">
-                        <label>Password</label>
+                        <label>Contraseña</label>
                         <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.password?.message}</div>
                     </div>
                     <button disabled={isSubmitting} className="btn btn-primary">
                         {isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                        Login
+                        Ingresar
                     </button>
                 </form>
             </div>

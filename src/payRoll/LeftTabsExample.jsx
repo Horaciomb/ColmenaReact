@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import LinksPagos from './LinksPagos';
-import LinkedPlanillas from './LinkedPlanillas'
+import LinksPorcentajes from './LinksPorcentajes';
 //import Sonnet from '../../components/Sonnet';
 
 function LeftTabsExample() {
@@ -16,10 +16,7 @@ function LeftTabsExample() {
               <Nav.Link eventKey="first">Pagos</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="second">Planillas</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="third">Novedades</Nav.Link>
+              <Nav.Link eventKey="third">Porcentajes</Nav.Link>
             </Nav.Item>
           </Nav>
         </Col>
@@ -28,11 +25,8 @@ function LeftTabsExample() {
             <Tab.Pane eventKey="first">
                 <LinksPagos></LinksPagos>
             </Tab.Pane>
-            <Tab.Pane eventKey="second">
-                <LinkedPlanillas></LinkedPlanillas>
-            </Tab.Pane>
             <Tab.Pane eventKey="third">
-                <h1>Novedades</h1>
+                <LinksPorcentajes></LinksPorcentajes>
             </Tab.Pane>
           </Tab.Content>
         </Col>

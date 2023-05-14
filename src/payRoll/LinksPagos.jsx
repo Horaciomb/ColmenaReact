@@ -7,16 +7,16 @@ function LinksPagos() {
       <ListGroup.Item action href="/pagosueldos">
         Pago de Sueldos
       </ListGroup.Item>
-      <ListGroup.Item action href="#link2">
+      <ListGroup.Item action href="/pagoaguinaldo">
         Pago Aguinaldos
       </ListGroup.Item>
-      <ListGroup.Item action href="#link3">
+      <ListGroup.Item action href="/pagoprimas">
         Pago Primas
       </ListGroup.Item>
-      <ListGroup.Item action href="#link4">
+      <ListGroup.Item action href="/pagoafiniquito">
         Pago Finiquito
       </ListGroup.Item>
-      <ListGroup.Item action href="#link5">
+      <ListGroup.Item action href="/boletadepago">
         Generar Boletas de Pagos
       </ListGroup.Item>
     </ListGroup>

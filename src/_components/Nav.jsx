@@ -23,9 +23,7 @@ function Nav() {
                 </NavLink>
                 <div className='collapse navbar-collapse'>
                     <ul className='navbar-nav me-auto'>
-                        <li className='nav-item'>
-                            <NavLink to="/users" className="nav-item me-2 nav-link">Usuarios</NavLink>
-                        </li>
+
                         <li className='nav-item'>
                         <a href="" onClick={userActions.logout} className="nav-item nav-link">Salir</a>
                         </li>

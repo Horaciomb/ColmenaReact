@@ -11,7 +11,7 @@ function FormPagoSueldos() {
   const today = new Date(timeElapsed);
   const [cuerpo, setCuerpo] = useState({
     EmpresaId: "1",
-    mes: today.getMonth().toString(),
+    mes: today.getMonth().toString() ,
     ano: today.getFullYear().toString(),
   });
 

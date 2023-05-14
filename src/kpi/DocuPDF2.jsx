@@ -130,7 +130,7 @@ class DocuPDF2 extends Component {
                 <Card.Body>
                   <Row>
                     <Col>
-                      <Card.Title>Promedio de Antiguedad</Card.Title>
+                      <Card.Title>Promedio de Antigüedad</Card.Title>
                       <Card.Text>
                         <h1 className="display-4">{this.props.promedioAntiguedad}</h1>
                       </Card.Text>

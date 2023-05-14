@@ -1,17 +1,59 @@
-import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
-import Row from 'react-bootstrap/Row';
-import Tab from 'react-bootstrap/Tab';
-import LinkedExample from './LinkedExample'
-//import Sonnet from '../../components/Sonnet';
+import Col from "react-bootstrap/Col";
+import Nav from "react-bootstrap/Nav";
+import Row from "react-bootstrap/Row";
+import Tab from "react-bootstrap/Tab";
+import { LinkedItems } from "../_components";
 
 function LeftTabsExample() {
+  const titlesPersonas = [
+    "Gestionar Personas",
+    "Gestionar Datos Contacto",
+    "Gestionar Bancos",
+    "Asignar Cuenta Bancaria",
+    "Gestionar Institución",
+    "Asignar Formación",
+    "Gestionar Empresas",
+    "Asignar Experiencia Laboral",
+  ];
+  const linksPersonas = [
+    "/personas",
+    "/gestionarDatosContacto",
+    "/gestionarBancos",
+    "/gestionarCuentasBancarias",
+    "/gestionarInstitucion",
+    "/gestionarFormaciones",
+    "/gestionarEmpresas",
+    "/gestionarExperienciaLaboral",
+  ];
+  const titulosEmpleados = [
+    "Gestionar Empleados",
+    "Obtener Cargo",
+    "Asignar Cargo",
+    "Gestionar RC-IVA",
+    "Gestionar Ingresos",
+    "Gestionar Descuentos",
+    "Gestionar Subsidios",
+    "Gestionar Vacaciones",
+    "Asignar AFP",
+  ];
+  const linksEmpleados = [
+    "/empleados",
+    "/obtenerCargos",
+    "/asignarCargos",
+    "/GestionarRcivas",
+    "/gestionarIngresos",
+    "/gestionarDescuentos",
+    "/gestionarSubsidios",
+    "/gestionarVacaciones",
+    "/gestionarAsignacionAfp",
+  ];
+
   return (
     <Tab.Container id="left-tabs-example" defaultActiveKey="first">
       <Row>
         <Col sm={3}>
           <Nav variant="pills" className="flex-column">
-            <Nav.Item >
+            <Nav.Item>
               <Nav.Link eventKey="first">Persona</Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -22,10 +64,10 @@ function LeftTabsExample() {
         <Col sm={9}>
           <Tab.Content>
             <Tab.Pane eventKey="first">
-              <LinkedExample></LinkedExample>
+              <LinkedItems titles={titlesPersonas} links={linksPersonas} />
             </Tab.Pane>
             <Tab.Pane eventKey="second">
-              <h1>Segundo</h1>
+              <LinkedItems titles={titulosEmpleados} links={linksEmpleados} />
             </Tab.Pane>
           </Tab.Content>
         </Col>
