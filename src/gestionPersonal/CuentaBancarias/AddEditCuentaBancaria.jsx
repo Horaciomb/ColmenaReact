@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useRecoilValue } from "recoil";
+//import { useRecoilValue } from "recoil";
 import {Modal,Button, Form, Row, Col } from "react-bootstrap";
-import { CuentaBancariaAtom } from "_state";
+//import { CuentaBancariaAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
 import client, {
   getCuentaBancariaQuery,
@@ -19,7 +19,7 @@ function AddEditCuentaBancaria({ history, match }) {
   const mode = { add: !id, edit: !!id };
   const userActions = useUserActions();
   const alertActions = useAlertActions();
-  const aporte = useRecoilValue(CuentaBancariaAtom);
+  //const aporte = useRecoilValue(CuentaBancariaAtom);
   const [dato, setDato] = useState({
     id: "",
     persona: {

@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { SueldosAtom } from "_state";
+//import { useRecoilValue } from "recoil";
+//import { SueldosAtom } from "_state";
 import { useUserActions } from "_actions";
 import client, { getContratoSueldosQuery } from "../../../grafql/graphql";
 export { ListarSueldos };
@@ -10,7 +10,7 @@ function ListarSueldos({ match }) {
   const { path } = match;
   const { id } = match.params;
   const [datos, setDatos] = useState(null);
-  const sueldos = useRecoilValue(SueldosAtom);
+  //const sueldos = useRecoilValue(SueldosAtom);
   const userActions = useUserActions();
   useEffect(() => {
     async function getData() {

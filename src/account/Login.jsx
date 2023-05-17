@@ -25,7 +25,7 @@ function Login() {
         <div className="card m-3">
             <h4 className="card-header">Iniciar Sesión</h4>
             <div className="card-body">
-                <form onSubmit={handleSubmit(userActions.login)}>
+                <form onSubmit={handleSubmit(userActions.loginKeycloak)}>
                     <div className="form-group">
                         <label>Username</label>
                         <input name="username" type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />

@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "https://localhost:4000/graphql",
+  uri: "https://colmena-webapi.azurewebsites.net/graphql",
   cache: new InMemoryCache(),
 });
 // Consulta RCIVAS

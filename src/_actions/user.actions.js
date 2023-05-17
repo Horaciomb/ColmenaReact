@@ -1,4 +1,6 @@
 import { useRecoilState, useSetRecoilState, useResetRecoilState } from "recoil";
+import jwtDecode from "jwt-decode";
+import { useAlertActions } from "_actions";
 
 import { history, useFetchWrapper } from "_helpers";
 import {
@@ -72,6 +74,7 @@ import {
 export { useUserActions };
 
 function useUserActions() {
+  const alertActions = useAlertActions();
   const baseUrl = `${process.env.REACT_APP_API_URL}/users`;
   const personasApiUrl = `${process.env.REACT_APP_API_URL}/Personas`;
   const empresasApiUrl = `${process.env.REACT_APP_API_URL}/Empresas`;
@@ -221,6 +224,7 @@ function useUserActions() {
 
   return {
     login,
+    loginKeycloak,
     logout,
     register,
     getAll,
@@ -504,7 +508,7 @@ function useUserActions() {
 
   function login({ username, password }) {
     return fetchWrapper
-      .post(`${baseUrl}/authenticate`, { username, password })
+      .post(`${baseUrl}`, { username, password })
       .then((user) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem("user", JSON.stringify(user));
@@ -515,7 +519,57 @@ function useUserActions() {
         history.push(from);
       });
   }
+  function loginKeycloak({username, password}) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `grant_type=password&client_id=colmena-webapi&client_secret=uHcrT3i2PlD74iqk9cliQjPzyu1VYdSJ&username=${encodeURIComponent(
+        username
+      )}&password=${encodeURIComponent(password)}`,
+    };
+    return fetch(
+      "https://keycloakcolmena.azurewebsites.net/auth/realms/COLMENA/protocol/openid-connect/token",
+      requestOptions
+    )
+      .then(handleResponse)
+      .then((data) => {
+        const decodedToken = jwtDecode(data.access_token);
+        const roles = decodedToken.realm_access.roles;
+        const username = decodedToken.preferred_username;
+        const user = {
+          token: data.access_token,
+          roles: roles,
+          username: username,
+        };
+        localStorage.setItem("user", JSON.stringify(user));
+        setAuth(user);
+        console.log(user);
+        const { from } = history.location.state || { from: { pathname: "/" } };
+        history.push(from);
+      });
+  }
+  function handleResponse(response) {
+    return response.text().then((text) => {
+      const data = text && JSON.parse(text);
 
+      if (!response.ok) {
+        if ([401, 403].includes(response.status) && auth?.token) {
+          // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+          localStorage.removeItem("user");
+          setAuth(null);
+          history.push("/account/login");
+        }
+
+        const error = (data && data.message) || response.statusText;
+        alertActions.error(error);
+        return Promise.reject(error);
+      }
+
+      return data;
+    });
+  }
   function logout() {
     // remove user from local storage, set auth state to null and redirect to login page
     localStorage.removeItem("user");
