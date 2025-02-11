@@ -55,6 +55,7 @@ function AddEditDatosContacto({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_PERSONAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setPersonas(result.data.personas);
     }
@@ -65,6 +66,7 @@ function AddEditDatosContacto({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_DIVISIONES_POLITICAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setDepartamentos(result.data.divisionesPoliticas);
     }
@@ -269,7 +271,7 @@ function AddEditDatosContacto({ history, match }) {
                 <Form.Label>Teléfono</Form.Label>
                 <Form.Control
                   name="telefono"
-                  type="text"
+                  type="number"
                   {...register("telefono")}
                   className={`form-control ${
                     errors.telefono ? "is-invalid" : ""

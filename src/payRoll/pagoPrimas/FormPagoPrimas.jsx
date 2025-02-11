@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import {  Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { authAtom } from "_state";
 function FormPagoPrimas() {
+  const auth = useRecoilValue(authAtom);
+  const token = auth?.token;
   const baseUrl = `${process.env.REACT_APP_API_URL}/PagoPrimas/PagoPrimaEmpresaExcel`;
   const apiUrl = `${process.env.REACT_APP_API_URL}/Prima`;
   const timeElapsed = Date.now();
@@ -15,6 +16,8 @@ function FormPagoPrimas() {
   });
   const [primas, setPrimas] = useState([]);
   const [porcentaje, setPorcentaje] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   //const [año, setAño] = useState(0);
 
   const handleChange = (e) => {
@@ -26,7 +29,11 @@ function FormPagoPrimas() {
   };
   const getPrimaByEmpresa = async (empresaId) => {
     const url = `${apiUrl}/empresa/${empresaId}`;
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+      },
+    });
     return response.data;
   };
   const decimalToPercentage = (decimalValue) => {
@@ -34,29 +41,34 @@ function FormPagoPrimas() {
     return `${percentageValue}%`;
   };
 
-  const postCuerpo = (e) => {
+  const postCuerpo = async (e) => {
     e.preventDefault();
     if (porcentaje === "No existe prima para el año seleccionado.") {
       alert("No existe prima para el año seleccionado.");
     } else {
-      axios
-        .post(baseUrl, cuerpo, {
+      setIsLoading(true);
+      try {
+        const response = await axios.post(baseUrl, cuerpo, {
           method: "GET",
-          ContentType: "blob",
-          responseType: "arraybuffer", // important
-        })
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute(
-            "download",
-            `Pago de Primas Banca de Talentos S.R.L ${cuerpo.ano}.xlsx`
-          );
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((err) => console.log(err));
+          headers: {
+            Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+          },
+          responseType: "arraybuffer", // Importante
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `Pago de Primas Banca de Talentos S.R.L ${cuerpo.ano}.xlsx`
+        );
+        document.body.appendChild(link);
+        link.click();
+      } catch (err) {
+        console.log("Error fetching data", err);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
   useEffect(() => {
@@ -81,7 +93,7 @@ function FormPagoPrimas() {
 
   return (
     <>
-      <Form>
+      <Form onSubmit={postCuerpo}>
         <Row>
           <Col className="my-1">
             <Form.Group className="mb-3">
@@ -112,8 +124,8 @@ function FormPagoPrimas() {
         </Row>
         <Row>
           <Col>
-            <Button variant="success" onClick={postCuerpo}>
-              Imprimir
+            <Button type="submit" variant="success" disabled={isLoading}>
+              {isLoading ? "Cargando..." : "Imprimir"}
             </Button>
           </Col>
         </Row>

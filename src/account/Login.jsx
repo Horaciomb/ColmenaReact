@@ -18,6 +18,7 @@ function Login() {
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
+    // funcion para keycloak <form onSubmit={handleSubmit(userActions.loginKeycloak)}>
     const { register, handleSubmit, formState } = useForm(formOptions);
     const { errors, isSubmitting } = formState;
 

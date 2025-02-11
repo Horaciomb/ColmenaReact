@@ -1,10 +1,8 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Collapse from "react-bootstrap/Collapse";
+import { Button, Form, Row, Col, Collapse } from "react-bootstrap";
 import DocuPDF2 from "./DocuPDF2.jsx";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { authAtom } from "_state";
 import axios from "axios";
 import {
   Chart as ChartJS,
@@ -29,10 +27,13 @@ ChartJS.register(
 );
 
 function FormKPI() {
+  const auth = useRecoilValue(authAtom);
+  const token = auth?.token;
   const baseUrl = `${process.env.REACT_APP_API_URL}/Kpis`;
   const [open, setOpen] = useState(false);
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
+  const [isLoading, setIsLoading] = useState(false);
   const [cuerpo, setCuerpo] = useState({
     EmpresaId: "1",
     mes: today.getMonth().toString(),
@@ -128,10 +129,14 @@ function FormKPI() {
   };
   const postCuerpo = (e) => {
     e.preventDefault();
-    console.log(cuerpo);
-
+    //console.log(cuerpo);
+    setIsLoading(true);
     axios
-      .post(baseUrl, cuerpo)
+      .post(baseUrl, cuerpo, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+        },
+      })
       .then((res) => {
         //console.log(res.data.distribucionRegional)
         // Distribución Departamental Bolivia
@@ -345,10 +350,11 @@ function FormKPI() {
           ],
         };
         setDataPieCargos(contenidoPieCargos);
-        // Aparecer
         setOpen(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)).finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -405,7 +411,7 @@ function FormKPI() {
               aria-controls="example-collapse-text"
               aria-expanded={open}
             >
-              Generar
+             {isLoading ? "Generando..." : "Generar"}
             </Button>
           </Col>
         </Row>

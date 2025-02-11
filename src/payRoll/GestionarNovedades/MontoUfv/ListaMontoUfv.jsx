@@ -1,18 +1,29 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import TablaCrud from "_components/TablaCrud";
+import { useUserActions } from "_actions";
 import { useRecoilValue } from "recoil";
 import { MontoUfvsAtom } from "_state";
-import { useUserActions } from "_actions";
 export { ListaMontoUfv };
 function ListaMontoUfv({ match }) {
   const { path } = match;
   const aportes = useRecoilValue(MontoUfvsAtom);
   const actions = useUserActions();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (aportes) {
+      const datosTransformados = transformarDatos(aportes);
+      setData(datosTransformados);
+    }
+  }, [aportes]);
+
   useEffect(() => {
     actions.getMontUfvs();
     return actions.resetMontoUfvs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -20,68 +31,45 @@ function ListaMontoUfv({ match }) {
     const year = date.getFullYear().toString();
     return `${day}-${month}-${year}`;
   }
+
+  function transformarDatos(datos) {
+    return datos
+      .slice()
+      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+      .map((aporte) => ({
+        id: aporte.id,
+        monto: aporte.monto,
+        fecha: formatDate(aporte.fecha),
+      }));
+  }
+
+  const columns = [
+    {
+      header: "Monto",
+      accessorKey: "monto",
+    },
+    {
+      header: "Fecha",
+      accessorKey: "fecha",
+    },
+  ];
+
+  const handleClick = (id) => {
+    return actions.deleteMontoUfv(id);
+  };
   return (
     <div>
       <h1>Gestionar Monto UFV </h1>
       <Link to={`${path}/add`} className="btn btn-sm btn-success mb-2">
         Agregar Monto
       </Link>
-      <div
-        style={{
-          maxHeight: "400px",
-          maxWidth: "700px",
-          overflow: "auto",
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-          marginRight: "10px",
-        }}
-      >
-        <table className="table table-striped ">
-          <thead>
-            <tr>
-              <th style={{ width: "25%" }}>Monto</th>
-              <th style={{ width: "25%" }}>Fecha</th>
-              <th style={{ width: "25%" }}>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {aportes
-              ?.slice()
-              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-              .map((aporte) => (
-                <tr key={aporte.id}>
-                  <td>{aporte.monto}</td>
-                  <td>{formatDate(aporte.fecha)}</td>
-                  <td style={{ whiteSpace: "nowrap" }}>
-                    <Link
-                      to={`${path}/edit/${aporte.id}`}
-                      className="btn btn-sm btn-primary mr-1"
-                    >
-                      Editar
-                    </Link>
-                    <button
-                      onClick={() => actions.deleteMontoUfv(aporte.id)}
-                      className="btn btn-sm btn-danger"
-                      disabled={aporte.isDeleting}
-                    >
-                      {aporte.isDeleting ? (
-                        <span className="spinner-border spinner-border-sm"></span>
-                      ) : (
-                        <span>Eliminar</span>
-                      )}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            {!aportes && (
-              <tr>
-                <td colSpan="4" className="text-center">
-                  <span className="spinner-border spinner-border-lg align-center"></span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <TablaCrud
+        data={data}
+        columns={columns}
+        datos={aportes}
+        path={path}
+        handleClick={handleClick}
+      />
     </div>
   );
 }

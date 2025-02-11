@@ -1,22 +1,34 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import TablaCrud from "_components/TablaCrud";
+import { useUserActions } from "_actions";
 import { useRecoilValue } from "recoil";
 import { BonoAntigedadPorcentajesAtom } from "_state";
-import { useUserActions } from "_actions";
 export { ListaBonoAntiguedad };
 function ListaBonoAntiguedad({ match }) {
   const { path } = match;
   const bonos = useRecoilValue(BonoAntigedadPorcentajesAtom);
   const actions = useUserActions();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (bonos) {
+      const datosTransformados = transformarDatos(bonos);
+      setData(datosTransformados);
+    }
+  }, [bonos]);
+
   useEffect(() => {
     actions.getBonoAntiguedades();
     return actions.resetBonoAntiguedades();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   function decimalToPercentage(decimal) {
     const percentage = decimal * 100;
     return `${percentage.toFixed(2)}%`;
   }
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -24,69 +36,52 @@ function ListaBonoAntiguedad({ match }) {
     const year = date.getFullYear().toString();
     return `${day}-${month}-${year}`;
   }
+
+  function transformarDatos(datos) {
+    return datos.map((bono) => ({
+      id: bono.id,
+      aniosDeAntiguedad: bono.aniosDeAntiguedad,
+      porcentaje: decimalToPercentage(bono.porcentaje),
+      fechaInicio: formatDate(bono.fechaInicio),
+      fechaFin: formatDate(bono.fechaFin),
+    }));
+  }
+
+  const columns = [
+    {
+      header: "Año de Antigüedad",
+      accessorKey: "aniosDeAntiguedad",
+    },
+    {
+      header: "Porcentaje",
+      accessorKey: "porcentaje",
+    },
+    {
+      header: "Fecha Inicial",
+      accessorKey: "fechaInicio",
+    },
+    {
+      header: "Fecha Final",
+      accessorKey: "fechaFin",
+    },
+  ];
+
+  const handleClick = (id) => {
+    return actions.deleteBonoAntiguedad(id);
+  };
   return (
     <div>
       <h1>Gestionar Porcentaje de Bono de Antigüedad </h1>
       <Link to={`${path}/add`} className="btn btn-sm btn-success mb-2">
         Agregar Porcentaje
       </Link>
-      <div
-        style={{
-          maxheight: "450px",
- 
-          overflow: "auto",
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-          marginRight: "10px",
-        }}
-      >
-        <table className="table table-striped ">
-          <thead>
-            <tr>
-              <th style={{ width: "20%" }}>Año de Antigüedad</th>
-              <th style={{ width: "20%" }}>Porcentaje</th>
-              <th style={{ width: "20%" }}>Fecha Inicial</th>
-              <th style={{ width: "20%" }}>Fecha Final </th>
-              <th style={{ width: "20%" }}>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bonos?.map((bono) => (
-              <tr key={bono.id}>
-                <td>{bono.aniosDeAntiguedad}</td>
-                <td>{decimalToPercentage(bono.porcentaje)}</td>
-                <td>{formatDate(bono.fechaInicio)}</td>
-                <td>{formatDate(bono.fechaFin)}</td>
-                <td style={{ whiteSpace: "nowrap" }}>
-                  <Link
-                    to={`${path}/edit/${bono.id}`}
-                    className="btn btn-sm btn-primary mr-1"
-                  >
-                    Editar
-                  </Link>
-                  <button
-                    onClick={() => actions.deleteBonoAntiguedad(bono.id)}
-                    className="btn btn-sm btn-danger"
-                    disabled={bono.isDeleting}
-                  >
-                    {bono.isDeleting ? (
-                      <span className="spinner-border spinner-border-sm"></span>
-                    ) : (
-                      <span>Eliminar</span>
-                    )}
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {!bonos && (
-              <tr>
-                <td colSpan="4" className="text-center">
-                  <span className="spinner-border spinner-border-lg align-center"></span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <TablaCrud
+        data={data}
+        columns={columns}
+        datos={bonos}
+        path={path}
+        handleClick={handleClick}
+      />
     </div>
   );
 }

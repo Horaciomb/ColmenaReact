@@ -11,6 +11,7 @@ import client, {
 } from "../../grafql/graphql";
 import { empleadoAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
+import dayjs from "dayjs";
 export { AddEditEmpleado };
 function AddEditEmpleado({ history, match }) {
   const { id } = match.params;
@@ -29,16 +30,16 @@ function AddEditEmpleado({ history, match }) {
     apellidoMaterno: "",
   });
   const [dato, setDato] = useState({
-    id: 0,
+    id: "",
     codigoEmpleado: "",
     fechaAlta: "",
     fecaBaja: "",
     estado: {
-      id: 0,
+      id: "",
       nombre: "",
     },
     persona: {
-      id: 0,
+      id: "",
       nombre: "",
       apellidoPaterno: "",
       apellidoMaterno: "",
@@ -53,8 +54,9 @@ function AddEditEmpleado({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_PERSONAS_QUERY,
+        fetchPolicy: "network-only",
       });
-      setPersonas(result.data.personas);
+      setPersonas(result.data.personas); 
     }
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,27 +73,27 @@ function AddEditEmpleado({ history, match }) {
   // get functions to build form with useForm() hook
   const { register, handleSubmit, reset, formState } = useForm(formOptions);
   const { errors, isSubmitting } = formState;
-  useEffect(() => {
-    // fetch user details into recoil state in edit mode
-    if (mode.edit) {
-      //userActions.getEmpleadosId(id);
-    }
+  // useEffect(() => {
+  //   // fetch user details into recoil state in edit mode
+  //   if (mode.edit) {
+  //     userActions.getEmpleadosId(id);
+  //   }
 
-    return userActions.resetEmpleado;
+  //   return userActions.resetEmpleado;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   useEffect(() => {
-    async function getData() {
+    async function fetchData() {
       const result = await client.query(getEmpleadoQuery(id));
       setDato(result.data.empleado);
       console.log(result.data.empleado);
     }
     if (mode.edit) {
-      getData();
+      fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id, mode.edit]);
   useEffect(() => {
     if (mode.edit && dato) {
       const personas = dato.persona;
@@ -102,17 +104,14 @@ function AddEditEmpleado({ history, match }) {
         apellidoMaterno: personas.apellidoMaterno,
       };
       setPersonaSeleccionada(personita);
+      reset({
+        ...dato,
+        fechaAlta: dayjs(dato.fechaAlta).format("YYYY-MM-DD"), // Formatear fechaAlta
+        fechaBaja: dayjs(dato.fechaBaja).format("YYYY-MM-DD"), // Formatear fechaBaja
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode.edit, dato]);
-  useEffect(() => {
-    // set default form values after user set in recoil state (in edit mode)
-    if (mode.edit && dato) {
-      reset(dato);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dato]);
   function onSubmit(data) {
     return mode.add ? create(data) : update(dato.id, data);
   }

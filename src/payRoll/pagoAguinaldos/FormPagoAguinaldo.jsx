@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import {  Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { authAtom } from "_state";
 function FormPagoAguinaldo() {
+  const auth = useRecoilValue(authAtom);
+  const token = auth?.token;
   const baseUrl = `${process.env.REACT_APP_API_URL}/PagoAguinaldo/PagoAguinaldoEmpresaExcel`;
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
@@ -13,6 +14,7 @@ function FormPagoAguinaldo() {
     DobleAguinaldo: false,
     ano: today.getFullYear().toString(),
   });
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
     const newValue = e.target.type === "checkbox" ? checked : value;
@@ -20,32 +22,37 @@ function FormPagoAguinaldo() {
       ...cuerpo,
       [name]: newValue,
     });
-    console.log(cuerpo);
+    //console.log(cuerpo);
   };
-  const postCuerpo = (e) => {
+  const postCuerpo = async (e) => {
     e.preventDefault();
-    axios
-      .post(baseUrl, cuerpo, {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(baseUrl, cuerpo, {
         method: "GET",
-        ContentType: "blob",
-        responseType: "arraybuffer", // important
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-          "download",
-          `Aguinaldos Banca de Talentos S.R.L ${cuerpo.ano}.xlsx`
-        );
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch((err) => console.log(err));
+        headers: {
+          Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+        },
+        responseType: "arraybuffer", // Importante
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `Aguinaldos Banca de Talentos S.R.L ${cuerpo.ano}.xlsx`
+      );
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      console.log("Error fetching data", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
-      <Form>
+      <Form onSubmit={postCuerpo}>
         <Row>
           <Col className="my-1">
             <Form.Group className="mb-3">
@@ -79,8 +86,8 @@ function FormPagoAguinaldo() {
         </Row>
         <Row>
           <Col>
-            <Button variant="success" onClick={postCuerpo}>
-              Imprimir
+            <Button type="submit" variant="success" disabled={isLoading}>
+              {isLoading ? "Cargando..." : "Imprimir"}
             </Button>
           </Col>
         </Row>

@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
-
+import { useRecoilValue } from "recoil";
+import { authAtom } from "_state";
 import axios from "axios";
 function FormBoletaPago() {
+  const auth = useRecoilValue(authAtom);
+  const token = auth?.token;
   const baseUrl = `${process.env.REACT_APP_API_URL}/BoletasdePagos/PDF`;
   const apiUrl = `${process.env.REACT_APP_API_URL}/Prima`;
   const [tipoPago, setTipoPago] = useState("");
@@ -15,6 +18,7 @@ function FormBoletaPago() {
   const [empleadosFiltrados, setEmpleadosFiltrados] = useState([]);
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
+  const [isLoading, setIsLoading] = useState(false);
   const [cuerpo, setCuerpo] = useState({
     empresaId: 1,
     empleados: [],
@@ -85,7 +89,11 @@ function FormBoletaPago() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/Empleados`)
+      .get(`${process.env.REACT_APP_API_URL}/Empleados`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+        },
+      })
       .then((response) => {
         setEmpleados(response.data);
         setEmpleadosFiltrados(response.data);
@@ -173,11 +181,16 @@ function FormBoletaPago() {
   };
   const postCuerpo = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (porcentaje === "no" && cuerpo.tipoPago === "3") {
       alert("No existe prima para el año seleccionado.");
+      setIsLoading(false);
     } else {
       axios
         .post(baseUrl, cuerpo, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+          },
           method: "GET",
           ContentType: "blob",
           responseType: "arraybuffer", // important
@@ -193,7 +206,10 @@ function FormBoletaPago() {
           document.body.appendChild(link);
           link.click();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
   return (
@@ -280,8 +296,12 @@ function FormBoletaPago() {
                 )}
                 <Row>
                   <Col>
-                    <Button variant="success" onClick={postCuerpo}>
-                      Imprimir
+                    <Button
+                      variant="success"
+                      onClick={postCuerpo}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Cargando..." : "Imprimir"}
                     </Button>
                   </Col>
                 </Row>

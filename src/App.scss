@@ -1,0 +1,187 @@
+// // Importa Bootstrap
+// @import '~bootstrap/scss/bootstrap';
+
+// // Opcional: Importa estilos específicos de ButtonGroup si solo necesitas eso
+// @import '~bootstrap/scss/button-group';
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Montserrat", sans-serif;
+}
+$light: #ffffff;
+$gray: #8796a5;
+$oscuro: #343a40;
+$azul_colmena: #003764;
+.flex {
+  display: flex;
+}
+
+.content {
+  margin-left: 220px; /* El ancho de tu barra lateral + un poco de margen */
+  padding: 20px; /* Añade padding según sea necesario */
+}
+.navbar {
+  background-color: $azul_colmena; /* Asegúrate de definir $azul_colmena en tu archivo de variables */
+  padding: 1rem 2rem;
+  border-bottom: 1px solid $gray; /* Asegúrate de definir $gray en tu archivo de variables */
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  color: white; /* Color blanco para el texto del brand */
+}
+.navbar-brand img {
+  margin-right: 10px;
+}
+
+.navbar-nav .nav-link {
+  color: white; /* Color blanco para los enlaces */
+  margin-right: 10px; /* Espacio entre enlaces */
+}
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #cccccc; /* Color de los enlaces al pasar el ratón o si están activos */
+}
+
+.navbar-nav .logout-link {
+    margin-left: auto; /* Empuja el link de Salir a la derecha */
+    color: white; /* Color blanco para el enlace de Salir */
+}
+
+.navbar-nav .logout-link:hover {
+    color: #ff6666; /* Color del enlace de Salir al pasar el ratón */
+}
+.logout-link:hover {
+  color: #ff6666 !important; // Color del enlace de Salir al pasar el ratón
+}
+.sidebar {
+  //width: 12rem;
+  //height: calc(100vh - 52px);
+  background-color: $azul_colmena;
+  
+  // border-right: 1px solid $gray;
+  ul {
+    margin-right: 20px;
+    // list-style: none;
+    // padding: 1rem 2rem;
+    li {
+      //   margin-bottom: 1rem;
+      a {
+        //     text-decoration: none;
+        &.active {
+          background-color: $gray;
+          color: #000000; /* Texto negro */
+          border-radius: 10px; /* Borde redondeado */
+        }
+      }
+    }
+  }
+}
+.custom-card {
+  background-color: $azul_colmena; // Asegúrate de definir $azul_colmena en tu archivo de variables
+  border-radius: 10px; // Bordes redondeados
+  //padding: 1rem; // Relleno interno
+  color: white; // Color de texto
+
+  .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+  }
+
+  // .card-title, .card-text {
+  //     padding: 1rem;
+  // }
+
+  .btn {
+      margin-top: auto;
+  }
+}
+.table-responsive {
+  width: 100%;
+  margin-top: 10px; /* Ajusta según sea necesario */
+  margin-bottom: 10px; /* Ajusta según sea necesario */
+  overflow-x: auto;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 8px; /* Ajusta según sea necesario */
+      text-align: left;
+      border: 1px solid #ddd; /* Borde ligero entre celdas, ajusta el color según tu diseño */
+    }
+
+    th {
+      background-color: #f2f2f2; /* Fondo de las celdas de encabezado, ajusta según tu diseño */
+    }
+
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: #f9f9f9; /* Fondo de las filas pares, ajusta según tu diseño */
+        }
+      }
+    }
+  }
+
+  // Puedes añadir reglas adicionales según sea necesario
+  // ...
+}
+.pagination-container-buttons {
+  margin-top: 10px; /* Ajusta según sea necesario */
+  text-align: center;
+
+  .btn {
+    min-width: 40px; /* Ajusta según sea necesario */
+    padding: 6px 12px; /* Ajusta según sea necesario */
+    font-size: 14px; /* Ajusta según sea necesario */
+  }
+}
+// Agrega esto en tu archivo SCSS para estilizar el input
+.custom-input {
+  width: 400px; /* Ajusta según sea necesario */
+  padding: 8px 12px; /* Ajusta según sea necesario */
+  font-size: 14px; /* Ajusta según sea necesario */
+  border: 1px solid $gray; /* Utiliza el color de borde que prefieras */
+  border-radius: 5px; /* Ajusta según sea necesario */
+  margin-right: 10px; /* Ajusta según sea necesario */
+}
+
+.custom-input:focus {
+  outline: none; /* Elimina el contorno en foco si lo deseas */
+  border-color: #3498db; /* Cambia el color del borde al enfocarse */
+}
+
+/* ListaCargos.css */
+.lista-cargos {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista-cargos li {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.lista-cargos li:last-child {
+  border-bottom: none;
+}
+.cursiva {
+  font-style: italic;
+}
+#left-tabs-example {
+  .tab-pane-full-height {
+    min-height: 500px; // Ajusta este valor según tus necesidades
+    overflow: hidden;
+  }
+}
+
+

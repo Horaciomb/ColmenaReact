@@ -7,7 +7,7 @@ import { useRecoilValue } from "recoil";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { RcivaAtom, empleadosAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
-
+import dayjs from "dayjs";
 export { AddEditRciva };
 function AddEditRciva({ history, match }) {
   const { id } = match.params;
@@ -69,7 +69,10 @@ function AddEditRciva({ history, match }) {
   }, [aporte]);
   useEffect(() => {
     if (mode.edit && aporte) {
-      reset(aporte);
+      reset({
+        ...aporte,
+        fecha: dayjs(aporte.fecha).format("YYYY-MM-DD"), // Formatear la fecha para el campo de fecha
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aporte]);

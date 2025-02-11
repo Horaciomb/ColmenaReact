@@ -1,9 +1,44 @@
 import React from "react";
-//import BreadcrumbExample from "./BreadcrumbExample";
+
 import {MenuNavegador} from "../../_components";
-import ListaNovedades from "./ListaNovedades";
+import {LinkedItems} from "../../_components";
+
 export { GestionarNovedades };
 function GestionarNovedades() {
+  const titulosNovedades = [
+    "Porcentaje de Aporte de Vejez",
+    "Porcentaje de Aporte Laboral Solidario",
+    "Porcentaje de Aporte a Seguro a Corto Plazo",
+    "Porcentaje de Aporte Nacional Solidario",
+    "Porcentaje de Aporte Patronal Solidario",
+    "Porcentaje de Bono de Antigüedad",
+    "Porcentaje de Comisión por Administración",
+    "Porcentaje de Aporte Riesgo Común",
+    "Porcentaje de Impuesto Laboral RC-IVA",
+    "Porcentaje Riesgo Profesional",
+    "Porcentaje de Aporte Pro-Vivienda",
+    "Salario Mínimo Nacional",
+    "Monto de UFVs",
+  ];
+  
+  const linksNovedades = [
+    "/gestionarAporteVejez",
+    "/gestionarAporteLaboralSolidario",
+    "/gestionarAporteSeguro",
+    "/gestionarAporteNacionalSolidario",
+    "/gestionarAportePatronalSolidario",
+    "/gestionarBonoAntiguedad",
+    "/gestionarComisionAdministracion",
+    "/gestionarAporteRiesgoComun",
+    "/gestionarImpuestoRciva",
+    "/gestionarRiesgoProfesional",
+    "/gestionarAporteProVivienda",
+    "/gestionarSalarioMinimo",
+    "/gestionarMontoUfv",
+  ];
+  
+  // Puedes usar estos arrays en tu componente para renderizar la lista
+  
   return (
     <div className="p-4">
       <div className="container ">
@@ -12,7 +47,7 @@ function GestionarNovedades() {
           links={["/", "/payRoll", ""]}
         ></MenuNavegador>
         <h1>Gestionar Novedades</h1>
-        <ListaNovedades></ListaNovedades>
+        <LinkedItems titles={titulosNovedades} links={linksNovedades} />
       </div>
     </div>
   );

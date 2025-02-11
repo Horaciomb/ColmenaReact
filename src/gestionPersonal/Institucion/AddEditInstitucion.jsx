@@ -36,6 +36,7 @@ function AddEditInstitucion({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_DIVISIONES_POLITICAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setDepartamentos(result.data.divisionesPoliticas);
     }

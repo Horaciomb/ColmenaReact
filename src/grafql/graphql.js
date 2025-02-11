@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "https://colmena-webapi.azurewebsites.net/graphql",
+  uri: "https://localhost:4000/graphql",
   cache: new InMemoryCache(),
 });
 // Consulta RCIVAS
@@ -15,7 +15,25 @@ export const GET_RCIVAS_QUERY = gql`
     }
   }
 `;
+// Consulta Empresa
+const EMPRESA_QUERY = gql`
+  query Empresa($id: Int!) {
+    empresa(id: $id) {
+      nombre
+      nit
+      descripcion
+      regPatronal
+    }
+  }
+`;
 
+export const getEmpresaQuery = (id) => {
+  return {
+    query: EMPRESA_QUERY,
+    fetchPolicy: "network-only",
+    variables: { id },
+  };
+};
 // Consulta Personas
 export const GET_PERSONAS_QUERY = gql`
   {
@@ -72,6 +90,7 @@ const PERSONA_QUERY = gql`
 export const getPersonaQuery = (id) => {
   return {
     query: PERSONA_QUERY,
+    fetchPolicy: "network-only",
     variables: { id },
   };
 };
@@ -103,6 +122,7 @@ const EMPLEADO_QUERY = gql`
       codigoEmpleado
       fechaAlta
       fechaBaja
+      estadoId
       estado {
         id
         nombre
@@ -120,6 +140,7 @@ const EMPLEADO_QUERY = gql`
 export const getEmpleadoQuery = (id) => {
   return {
     query: EMPLEADO_QUERY,
+    fetchPolicy: "network-only",
     variables: { id },
   };
 };
@@ -202,6 +223,7 @@ const CARGO_QUERY = gql`
 export const getCargoQuery = (id) => {
   return {
     query: CARGO_QUERY,
+    fetchPolicy: "network-only",
     variables: { id },
   };
 };
@@ -298,6 +320,7 @@ const CONTRATO_QUERY = gql`
 export const getContratoQuery = (id) => {
   return {
     query: CONTRATO_QUERY,
+    fetchPolicy: "network-only",
     variables: { id },
   };
 };
@@ -321,6 +344,7 @@ export const GET_CONTRATO_SUELDOS_QUERY = gql`
 
 export const getContratoSueldosQuery = (id) => ({
   variables: { id },
+  fetchPolicy: "network-only",
   query: GET_CONTRATO_SUELDOS_QUERY,
 });
 // Tipo Nomina
@@ -338,6 +362,7 @@ export const GET_TIPO_NOMINA_QUERY = gql`
 
 export const getTipoNominaQuery = (id) => ({
   variables: { id },
+  fetchPolicy: "network-only",
   query: GET_TIPO_NOMINA_QUERY,
 });
 // Vacaciones
@@ -361,6 +386,7 @@ export const GET_VACACIONES_TOMADAS_QUERY = gql`
 
 export const getVacacionesTomadasQuery = (id) => ({
   variables: { id },
+  fetchPolicy: "network-only",
   query: GET_VACACIONES_TOMADAS_QUERY,
 });
 // Formaciones Variables
@@ -459,6 +485,7 @@ export const GET_BANCO_QUERY = gql`
 
 export const getBancoQuery = (id) => ({
   variables: { id },
+  fetchPolicy: "network-only",
   query: GET_BANCO_QUERY,
 });
 // Cuentas Bancarias
@@ -527,6 +554,7 @@ export const GET_CUENTA_BANCARIA_QUERY = gql`
 
 export const getCuentaBancariaQuery = (id) => ({
   variables: { id },
+  fetchPolicy: "network-only",
   query: GET_CUENTA_BANCARIA_QUERY,
 });
 export const CUENTA_BANCARIA_VARIABLES = gql`
@@ -544,6 +572,76 @@ export const CUENTA_BANCARIA_VARIABLES = gql`
       id
       nombre
       pais {
+        id
+        nombre
+      }
+    }
+  }
+`;
+
+// Grupo  Areas
+export const GRUPO_AREAS_QUERY = gql`
+  {
+    grupoAreas {
+      id
+      nombre
+    }
+  }
+`;
+// RolMapagrama
+export const ROL_MAPAGRAMAS_QUERY = gql`
+  {
+    rolMapagramas {
+      id
+      nombre
+    }
+  }
+`;
+
+
+// Cargos variables
+export const CARGO_VARIABLES = gql` {
+    areas {
+      id
+      nombre
+    }
+    tipoCargos {
+      id
+      nombre
+    }
+    responsabilidadMapagramas {
+      id
+      nombre
+    }
+    categoriaSueldos {
+      id
+      nombre
+    }
+    ciudades {
+      id
+      nombre
+      divisionPolitica {
+        id
+        nombre
+        pais {
+          id
+          nombre
+        }
+      }
+    }
+  }
+`;
+export const GET_AREAS_QUERY = gql`
+  {
+    areas {
+      id
+      nombre
+      objetivo
+      empresa {
+        id
+        nombre
+      }
+      rolMapagrama {
         id
         nombre
       }

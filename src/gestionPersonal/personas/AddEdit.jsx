@@ -9,8 +9,10 @@ import client, {
   GET_DIVISIONES_POLITICAS_QUERY,
   getPersonaQuery,
 } from "../../grafql/graphql";
+import dayjs from "dayjs"; 
 import { personaAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
+import TablaModal from "_components/TablaModal";
 
 export { AddEdit };
 
@@ -61,6 +63,7 @@ function AddEdit({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_DIVISIONES_POLITICAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setDepartamentos(result.data.divisionesPoliticas);
     }
@@ -121,7 +124,12 @@ function AddEdit({ history, match }) {
   useEffect(() => {
     // set default form values after user set in recoil state (in edit mode)
     if (mode.edit && dato) {
-      reset(dato);
+      // Preprocesa las fechas utilizando dayjs y asegúrate de que estén en el formato correcto
+      const processedFechaNac = dayjs(dato.fechaNac).format("YYYY-MM-DD");
+      reset({
+        ...dato,
+        fechaNac: processedFechaNac,
+      });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

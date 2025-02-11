@@ -8,6 +8,7 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { VacacionAtom, empleadosAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
 import client, { getVacacionesTomadasQuery } from "../../grafql/graphql";
+import dayjs from "dayjs";
 export { AddEditVacaciones };
 function AddEditVacaciones({ history, match }) {
   const { id } = match.params;
@@ -73,8 +74,12 @@ function AddEditVacaciones({ history, match }) {
   useEffect(() => {
     // set default form values after user set in recoil state (in edit mode)
     if (mode.edit && dato) {
-      reset(dato);
+      reset({
+        ...dato,
+        fechaInicio: dayjs(dato.fechaInicio).format("YYYY-MM-DD"), // Formatear fechaInicio
+      });
     }
+    
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dato]);
@@ -85,6 +90,8 @@ function AddEditVacaciones({ history, match }) {
         nombrePersona: dato.empleado.persona.nombre,
         apellidoPaterno: dato.empleado.persona.apellidoPaterno,
         apellidoMaterno: dato.empleado.persona.apellidoMaterno,
+        diasAcumulados:dato.empleado.diasAcumulados,
+        diasTomados:dato.empleado.diasTomados,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,13 +182,13 @@ function AddEditVacaciones({ history, match }) {
             </Col>
             <Col>
               <Form.Group className="mb-3">
-                <Form.Label>Dias Acumulados</Form.Label>
+                <Form.Label>Días Acumulados</Form.Label>
                 <Form.Control disabled value={diasAcumulados} />
               </Form.Group>
             </Col>
             <Col>
               <Form.Group className="mb-3">
-                <Form.Label>Dias Acumulados</Form.Label>
+                <Form.Label>Días Tomados</Form.Label>
                 <Form.Control disabled value={diasTomados} />
               </Form.Group>
             </Col>

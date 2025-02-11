@@ -1,25 +1,27 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-//import { useRecoilValue } from "recoil";
-//import { RcivasAtom } from "_state";
+import TablaCrud from "_components/TablaCrud"; 
 import { useUserActions } from "_actions";
-import client, { GET_CONTRATOS_QUERY } from "../../grafql/graphql";
+import client, { GET_CONTRATOS_QUERY } from "../../grafql/graphql"; 
 export { ListaAsignarCargos };
 function ListaAsignarCargos({ match }) {
   const { path } = match;
   const userActions = useUserActions();
+  const [datos, setDatos] = useState([]);
 
-  const [datos, setDatos] = useState(null);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_CONTRATOS_QUERY });
+      const result = await client.query({
+        query: GET_CONTRATOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setDatos(result.data.contratos);
     }
 
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -27,6 +29,56 @@ function ListaAsignarCargos({ match }) {
     const year = date.getFullYear().toString();
     return `${day}-${month}-${year}`;
   }
+
+  useEffect(() => {
+    userActions.getContratos();
+    return userActions.resetContratos;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const columns = [
+    {
+      header: "#",
+      accessorKey: "id",
+    },
+    {
+      header: "Cod Empleado",
+      accessorKey: "empleado.codigoEmpleado",
+    },
+    {
+      header: "Empleado",
+      accessorKey: "empleado.persona.nombre",
+      Cell: (row) => (
+        <>
+          {row.original.empleado.persona.nombre}{" "}
+          {row.original.empleado.persona.apellidoPaterno}{" "}
+          {row.original.empleado.persona.apellidoMaterno}
+        </>
+      ),
+    },
+    {
+      header: "Tipo Contrato",
+      accessorKey: "tipoContrato.nombre",
+    },
+    {
+      header: "Fecha Inicio",
+      accessorKey: "fechaInicio",
+      Cell: (row) => formatDate(row.original.fechaInicio),
+    },
+    {
+      header: "Fecha Fin",
+      accessorKey: "fechaFin",
+      Cell: (row) => formatDate(row.original.fechaFin),
+    },
+    {
+      header: "Horas",
+      accessorKey: "horas",
+    },
+  ];
+
+  const handleClick = (id) => {
+    return userActions.deleteContrato2(id);
+  };
   return (
     <div>
       <h1>Asignar Cargo </h1>

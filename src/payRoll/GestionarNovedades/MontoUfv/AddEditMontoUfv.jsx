@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useRecoilValue } from "recoil";
-
+import dayjs from "dayjs";
 import { MontoUfvAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
 export { AddEditMontoUfv };
@@ -32,7 +32,11 @@ function AddEditMontoUfv({ history, match }) {
   }, []);
   useEffect(() => {
     if (mode.edit && aporte) {
-      reset(aporte);
+      const formattedAporte = {
+        ...aporte,
+        fecha: dayjs(aporte.fecha).format("YYYY-MM-DD"),      
+      };
+      reset(formattedAporte);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aporte]);

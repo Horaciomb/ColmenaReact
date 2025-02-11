@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useRecoilValue } from "recoil";
-
+import dayjs from "dayjs";
 import { AporteNacionalSolidarioAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
 export { AddEditAporteNacionalSolidario };
@@ -35,8 +35,13 @@ function AddEditAporteNacionalSolidario({ history, match }) {
   }, []);
   useEffect(() => {
     if (mode.edit && aporte) {
-        console.log(aporte);
-      reset(aporte);
+        //console.log(aporte);
+        const formattedAporte = {
+          ...aporte,
+          fechaInicio: dayjs(aporte.fechaInicio).format("YYYY-MM-DD"),
+          fechaFin: dayjs(aporte.fechaFin).format("YYYY-MM-DD"),
+        };
+        reset(formattedAporte);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aporte]);

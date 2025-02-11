@@ -1,14 +1,14 @@
-import BreadcrumbExample from './BreadcrumbExample';
-import FormKPI from './FormKPI';
-export {KPI};
-function KPI(){
-    return (
-        <div className="p-4">
-            <div className="container ">
-                <BreadcrumbExample></BreadcrumbExample>
-                <h1 >KPI</h1>
-                <FormKPI></FormKPI>
-            </div>                      
-        </div>
-    );
+import FormKPI from "./FormKPI";
+import { MenuNavegador } from "_components";
+export { KPI };
+function KPI() {
+  return (
+    <div className="p-4">
+      <div className="container ">
+        <MenuNavegador titles={["Inicio", "KPI"]} links={["/", ""]} />
+        <h1>KPI</h1>
+        <FormKPI></FormKPI>
+      </div>
+    </div>
+  );
 }

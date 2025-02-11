@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 //import { useRecoilValue } from "recoil";
-import {Modal,Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 //import { CuentaBancariaAtom } from "_state";
 import { useUserActions, useAlertActions } from "_actions";
 import client, {
@@ -116,6 +116,7 @@ function AddEditCuentaBancaria({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_PERSONAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setPersonas(result.data.personas);
     }
@@ -126,6 +127,7 @@ function AddEditCuentaBancaria({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: CUENTA_BANCARIA_VARIABLES,
+        fetchPolicy: "network-only",
       });
       setBancos(result.data.bancos);
       setDepartamentos(result.data.divisionesPoliticas);
@@ -214,6 +216,7 @@ function AddEditCuentaBancaria({ history, match }) {
     alertActions.success("Cuenta Bancaria añadida");
   }
   async function updateAporte(id, data) {
+    console.log(id, data);
     await userActions.updateCuentaBancaria(id, data);
     history.push("/gestionarCuentasBancarias");
     alertActions.success("Cuenta Bancaria actualizada");
@@ -384,7 +387,7 @@ function AddEditCuentaBancaria({ history, match }) {
                 <Form.Label>Número de Cuenta</Form.Label>
                 <Form.Control
                   name="nroCuenta"
-                  type="text"
+                  type="number"
                   {...register("nroCuenta")}
                   className={`form-control ${
                     errors.nroCuenta ? "is-invalid" : ""

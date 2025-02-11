@@ -11,7 +11,10 @@ function ListObtenerCargos({ match }) {
   const [datos, setDatos] = useState(null);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_CARGOS_QUERY });
+      const result = await client.query({
+        query: GET_CARGOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setDatos(result.data.cargos);
     }
 

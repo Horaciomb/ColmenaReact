@@ -13,7 +13,10 @@ function ListaBancos({ match }) {
   const userActions = useUserActions();
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_BANCOS_QUERY });
+      const result = await client.query({
+        query: GET_BANCOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setDatos(result.data.bancos);
     }
 
@@ -45,9 +48,9 @@ function ListaBancos({ match }) {
             </tr>
           </thead>
           <tbody>
-            {datos?.map((item,index) => (
+            {datos?.map((item, index) => (
               <tr key={item.id}>
-                <td>{index+1}</td>
+                <td>{index + 1}</td>
                 <td>{item.nombre}</td>
                 <td>{item.descripcion} </td>
                 <td style={{ whiteSpace: "nowrap" }}>

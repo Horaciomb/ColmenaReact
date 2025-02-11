@@ -11,6 +11,7 @@ import client, {
   GET_EMPLEADOS_QUERY,
   getTipoNominaQuery,
 } from "../../grafql/graphql";
+import dayjs from "dayjs";
 export { AddEditIngreso };
 function AddEditIngreso({ history, match }) {
   const { id } = match.params;
@@ -65,7 +66,10 @@ function AddEditIngreso({ history, match }) {
   const { errors, isSubmitting } = formState;
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_EMPLEADOS_QUERY });
+      const result = await client.query({
+        query: GET_EMPLEADOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setEmpleados(result.data.empleados);
     }
 
@@ -104,7 +108,11 @@ function AddEditIngreso({ history, match }) {
   }, [mode.edit, ingreso]);
   useEffect(() => {
     if (mode.edit && ingreso) {
-      reset(ingreso);
+      reset({
+        ...ingreso,
+        fechaInicio: dayjs(ingreso.fechaInicio).format("YYYY-MM-DD"),
+        fechaFin: dayjs(ingreso.fechaFin).format("YYYY-MM-DD"),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ingreso]);
@@ -216,7 +224,7 @@ function AddEditIngreso({ history, match }) {
                 <Form.Label>Monto</Form.Label>
                 <Form.Control
                   name="monto"
-                  type="text"
+                  type="number"
                   {...register("monto")}
                   className={`form-control ${errors.monto ? "is-invalid" : ""}`}
                 />

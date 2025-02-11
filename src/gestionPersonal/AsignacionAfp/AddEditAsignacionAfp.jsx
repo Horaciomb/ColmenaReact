@@ -77,7 +77,10 @@ function AddEditAsignacionAfp({ history, match }) {
   const afpId = afpSeleccionada?.id || "";
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_EMPLEADOS_QUERY });
+      const result = await client.query({
+        query: GET_EMPLEADOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setEmpleados(result.data.empleados);
     }
     getData();
@@ -85,7 +88,10 @@ function AddEditAsignacionAfp({ history, match }) {
   }, []);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_AFPS_QUERY });
+      const result = await client.query({
+        query: GET_AFPS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setAfps(result.data.afps);
     }
     getData();
@@ -93,7 +99,10 @@ function AddEditAsignacionAfp({ history, match }) {
   }, []);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_CIUDADES_QUERY });
+      const result = await client.query({
+        query: GET_CIUDADES_QUERY,
+        fetchPolicy: "network-only",
+      });
       setCiudades(result.data.ciudades);
     }
     getData();
@@ -358,9 +367,9 @@ function AddEditAsignacionAfp({ history, match }) {
               </tr>
             </thead>
             <tbody>
-              {empleados?.map((empleado,index) => (
+              {empleados?.map((empleado, index) => (
                 <tr key={empleado.id}>
-                  <td>{index+1}</td>
+                  <td>{index + 1}</td>
                   <td>{empleado.codigoEmpleado}</td>
                   <td>
                     {empleado.persona.nombre} {empleado.persona.apellidoPaterno}{" "}
@@ -452,12 +461,19 @@ function AddEditAsignacionAfp({ history, match }) {
               </tr>
             </thead>
             <tbody>
-              {ciudades?.slice()
+              {ciudades
+                ?.slice()
                 .sort((a, b) => {
-                  if (a.divisionPolitica.pais.nombre < b.divisionPolitica.pais.nombre) {
+                  if (
+                    a.divisionPolitica.pais.nombre <
+                    b.divisionPolitica.pais.nombre
+                  ) {
                     return -1;
                   }
-                  if (a.divisionPolitica.pais.nombre > b.divisionPolitica.pais.nombre) {
+                  if (
+                    a.divisionPolitica.pais.nombre >
+                    b.divisionPolitica.pais.nombre
+                  ) {
                     return 1;
                   }
                   if (a.divisionPolitica.nombre < b.divisionPolitica.nombre) {
@@ -467,22 +483,23 @@ function AddEditAsignacionAfp({ history, match }) {
                     return 1;
                   }
                   return 0;
-                }).map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-                  <td>{item.nombre}</td>
-                  <td>{item.divisionPolitica.nombre}</td>
-                  <td>{item.divisionPolitica.pais.nombre}</td>
-                  <td>
-                    <Button
-                      onClick={() => seleccionarCiudad(item)}
-                      className="btn btn-sm btn-succes"
-                    >
-                      Seleccionar
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                })
+                .map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{index + 1}</td>
+                    <td>{item.nombre}</td>
+                    <td>{item.divisionPolitica.nombre}</td>
+                    <td>{item.divisionPolitica.pais.nombre}</td>
+                    <td>
+                      <Button
+                        onClick={() => seleccionarCiudad(item)}
+                        className="btn btn-sm btn-succes"
+                      >
+                        Seleccionar
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
               {!ciudades && (
                 <tr>
                   <td colSpan="4" className="text-center">

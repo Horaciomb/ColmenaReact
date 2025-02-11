@@ -8,7 +8,6 @@ function LeftTabsExample() {
   const titlesPersonas = [
     "Gestionar Personas",
     "Gestionar Datos Contacto",
-    "Gestionar Bancos",
     "Asignar Cuenta Bancaria",
     "Gestionar Institución",
     "Asignar Formación",
@@ -18,7 +17,6 @@ function LeftTabsExample() {
   const linksPersonas = [
     "/personas",
     "/gestionarDatosContacto",
-    "/gestionarBancos",
     "/gestionarCuentasBancarias",
     "/gestionarInstitucion",
     "/gestionarFormaciones",
@@ -34,7 +32,7 @@ function LeftTabsExample() {
     "Gestionar Descuentos",
     "Gestionar Subsidios",
     "Gestionar Vacaciones",
-    "Asignar AFP",
+    "Asignar Gestora",
   ];
   const linksEmpleados = [
     "/empleados",
@@ -45,7 +43,7 @@ function LeftTabsExample() {
     "/gestionarDescuentos",
     "/gestionarSubsidios",
     "/gestionarVacaciones",
-    "/gestionarAsignacionAfp",
+    "/gestionarAsignacionGestora",
   ];
 
   return (
@@ -66,7 +64,7 @@ function LeftTabsExample() {
             <Tab.Pane eventKey="first">
               <LinkedItems titles={titlesPersonas} links={linksPersonas} />
             </Tab.Pane>
-            <Tab.Pane eventKey="second">
+            <Tab.Pane eventKey="second" >
               <LinkedItems titles={titulosEmpleados} links={linksEmpleados} />
             </Tab.Pane>
           </Tab.Content>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useRecoilValue } from "recoil";
@@ -74,7 +74,10 @@ function AddAsignarCargos({ history }) {
   const { errors, isSubmitting } = formState;
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_CARGOS_QUERY });
+      const result = await client.query({
+        query: GET_CARGOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setCargos(result.data.cargos);
     }
 
@@ -83,7 +86,10 @@ function AddAsignarCargos({ history }) {
   }, []);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_EMPLEADOS_QUERY });
+      const result = await client.query({
+        query: GET_EMPLEADOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setEmpleados(result.data.empleados);
     }
 

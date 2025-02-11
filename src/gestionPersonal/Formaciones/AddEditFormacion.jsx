@@ -12,6 +12,7 @@ import client, {
   GET_FORMACION_VARIABLES,
   GET_PERSONAS_QUERY,
 } from "../../grafql/graphql";
+import dayjs from "dayjs";
 export { AddEditFormacion };
 function AddEditFormacion({ history, match }) {
   const { id } = match.params;
@@ -102,6 +103,7 @@ function AddEditFormacion({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_PERSONAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setPersonas(result.data.personas);
     }
@@ -112,6 +114,7 @@ function AddEditFormacion({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_FORMACION_VARIABLES,
+        fetchPolicy: "network-only",
       });
       setEspecialidades(result.data.especialidades);
       setTipoFormaciones(result.data.tipoFormaciones);
@@ -184,7 +187,10 @@ function AddEditFormacion({ history, match }) {
   }, [mode.edit, aporte]);
   useEffect(() => {
     if (mode.edit && aporte) {
-      reset(aporte);
+      reset({
+        ...aporte,
+        fecha: dayjs(aporte.fecha).format("YYYY-MM-DD"), // Formatear la fecha para el campo de fecha
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aporte]);

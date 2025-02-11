@@ -1,6 +1,8 @@
 import React from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-export  {MenuNavegador};
+import { Link } from "react-router-dom";
+
+export { MenuNavegador };
 function MenuNavegador({ titles, links }) {
   const breadcrumbItems = titles.map((title, index) => {
     if (index === titles.length - 1) {
@@ -11,8 +13,8 @@ function MenuNavegador({ titles, links }) {
       );
     } else {
       return (
-        <Breadcrumb.Item key={index} href={links[index]}>
-          {title}
+        <Breadcrumb.Item key={index}>
+          <Link to={links[index]}>{title}</Link>
         </Breadcrumb.Item>
       );
     }
@@ -20,5 +22,3 @@ function MenuNavegador({ titles, links }) {
 
   return <Breadcrumb>{breadcrumbItems}</Breadcrumb>;
 }
-
-

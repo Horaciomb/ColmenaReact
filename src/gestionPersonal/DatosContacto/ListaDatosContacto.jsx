@@ -1,14 +1,63 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import TablaCrud from "_components/TablaCrud";
 import { DatosContactosAtom } from "_state";
 import { useUserActions } from "_actions";
 export { ListaDatosContacto };
 function ListaDatosContacto({ match }) {
   const { path } = match;
-  const ingresos = useRecoilValue(DatosContactosAtom);
+  const datosContactos = useRecoilValue(DatosContactosAtom);
+  const [data, setData] = useState([]);
   const userActions = useUserActions();
+  useEffect(() => {
+    if (datosContactos) {
+      const datosTransformados = transformarDatos(datosContactos);
+      setData(datosTransformados);
+    }
+  }, [datosContactos]);
+  function transformarDatos(datos) {
+    return datos.map((item) => ({
+      id: item.id,
+      persona: `${item.persona.nombre} ${item.persona.apellidoPaterno} ${item.persona.apellidoMaterno}`,
+      localidad: item.localidad,
+      domicilio: item.domicilio,
+      telefono: item.telefono,
+      correo: item.correo,
+      divisionPolitica: item.divisionPolitica ? item.divisionPolitica.nombre : "",
+    }));
+  }
+
+  const columns = [
+    {
+      header: "Persona",
+      accessorKey: "persona",
+    },
+    {
+      header: "Localidad",
+      accessorKey: "localidad",
+    },
+    {
+      header: "Domicilio",
+      accessorKey: "domicilio",
+    },
+    {
+      header: "Teléfono",
+      accessorKey: "telefono",
+    },
+    {
+      header: "Correo",
+      accessorKey: "correo",
+    },
+    {
+      header: "Departamento",
+      accessorKey: "divisionPolitica",
+    },
+  ];
+
+  const handleClick = (id) => {
+    return userActions.deleteDatosContacto(id);
+  };
   useEffect(() => {
     userActions.getDatosContactos();
     return userActions.resetDatosContactos();
@@ -20,73 +69,13 @@ function ListaDatosContacto({ match }) {
       <Link to={`${path}/add`} className="btn btn-sm btn-success mb-2">
         Agregar Datos de Contacto
       </Link>
-      <div
-        style={{
-          height: "450px",
-          //maxWidth: "1000px",
-          overflow: "auto",
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-          marginRight: "10px",
-        }}
-      >
-        <table className="table table-striped ">
-          <thead>
-            <tr>
-              <th style={{ width: "5%" }}>#</th>
-              <th style={{ width: "40%" }}>Persona</th>
-              <th style={{ width: "20%" }}>Localidad</th>
-              <th style={{ width: "10%" }}>Domicilio</th>
-              <th style={{ width: "10%" }}>Telefono</th>
-              <th style={{ width: "10%" }}>Correo</th>
-              <th style={{ width: "10%" }}>Departamento</th>
-              <th style={{ width: "10%" }}>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ingresos?.map((ingreso, index) => (
-              <tr key={ingreso.id}>
-                <td>{index + 1}</td>
-                <td>
-                  {ingreso.persona.nombre}{" "}
-                  {ingreso.persona.apellidoPaterno}{" "}
-                  {ingreso.persona.apellidoMaterno}
-                </td>
-                <td>{ingreso.localidad}</td>
-                <td>{ingreso.domicilio}</td>
-                <td>{ingreso.telefono}</td>
-                <td>{ingreso.correo}</td>
-                <td>{ingreso.divisionPolitica.nombre}</td>
-                <td style={{ whiteSpace: "nowrap" }}>
-                  <Link
-                    to={`${path}/edit/${ingreso.id}`}
-                    className="btn btn-sm btn-primary mr-1"
-                  >
-                    Editar
-                  </Link>
-                  <button
-                    onClick={() => userActions.deleteDatosContacto(ingreso.id)}
-                    className="btn btn-sm btn-danger"
-                    disabled={ingreso.isDeleting}
-                  >
-                    {ingreso.isDeleting ? (
-                      <span className="spinner-border spinner-border-sm"></span>
-                    ) : (
-                      <span>Eliminar</span>
-                    )}
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {!ingresos && (
-              <tr>
-                <td colSpan="4" className="text-center">
-                  <span className="spinner-border spinner-border-lg align-center"></span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <TablaCrud
+        data={data}
+        columns={columns}
+        datos={datosContactos}
+        path={path}
+        handleClick={handleClick}
+      />
     </div>
   );
 }

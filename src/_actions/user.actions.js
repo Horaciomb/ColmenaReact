@@ -27,6 +27,8 @@ import {
   VacacionAtom,
   DatosContactoAtom,
   DatosContactosAtom,
+  DatosContactoEmpresaAtom,
+  DatosContactosEmpresasAtom,
   InstitucionAtom,
   InstitucionesAtom,
   FormacionAtom,
@@ -35,6 +37,8 @@ import {
   ExpLaboralesAtom,
   AsignacionAfpAtom,
   AsignacionAfpsAtom,
+  AsigancionGestoraAtom,
+  AsigancionGestorasAtom,
   BancoAtom,
   BancosAtom,
   CuentaBancariaAtom,
@@ -69,6 +73,15 @@ import {
   MontoUfvsAtom,
   RcivaAtom,
   RcivasAtom,
+  // Gestion de la Organización
+  TipoAreaAtom,
+  TiposAreasAtom,
+  AreaAtom,
+  AreasAtom,
+  CargoAtom,
+  CargosAtom,
+  CentroCostoAtom,
+  CentrosCostosAtom,
 } from "_state";
 
 export { useUserActions };
@@ -89,10 +102,12 @@ function useUserActions() {
   const subsidioApiUrl = `${process.env.REACT_APP_API_URL}/Subsidios`;
   const vacacionApiUrl = `${process.env.REACT_APP_API_URL}/VacacionesTomadas`;
   const datosContactoPersonaApiUrl = `${process.env.REACT_APP_API_URL}/DatosContactoPersonas`;
+  const datosContactoEmpresaApiUrl = `${process.env.REACT_APP_API_URL}/DatosContactoEmpresas`;
   const institucionesApisUrl = `${process.env.REACT_APP_API_URL}/Instituciones`;
   const formacionesApisUrl = `${process.env.REACT_APP_API_URL}/Formaciones`;
   const expLaboralesApisUrl = `${process.env.REACT_APP_API_URL}/ExperienciaLaborales`;
   const asignacionAfpApiUrl = `${process.env.REACT_APP_API_URL}/AsignacionAfps`;
+  const asignacionGestoraUrl = `${process.env.REACT_APP_API_URL}/AsignacionGestoras`;
   const bancoApiUrl = `${process.env.REACT_APP_API_URL}/Bancos`;
   const cuentaBancariaApisUrl = `${process.env.REACT_APP_API_URL}/CuentasBancarias`;
   // Gestionar Novedades
@@ -109,6 +124,11 @@ function useUserActions() {
   const aporteProViviendaApiUrl = `${process.env.REACT_APP_API_URL}/ProViviendas`;
   const salarioMinimoApiUrl = `${process.env.REACT_APP_API_URL}/SMNs`;
   const montoUfvApiUrl = `${process.env.REACT_APP_API_URL}/Ufvs`;
+  // Gestión de Organización
+  const tipoAreaApiUrl = `${process.env.REACT_APP_API_URL}/TipoAreas`;
+  const areasApiUrl = `${process.env.REACT_APP_API_URL}/Areas`;
+  const cargosApiUrl = `${process.env.REACT_APP_API_URL}/Cargos`;
+  const centroCostoApiUrl = `${process.env.REACT_APP_API_URL}/CentroCostos`;
   const fetchWrapper = useFetchWrapper();
   const [auth, setAuth] = useRecoilState(authAtom);
   const setUsers = useSetRecoilState(usersAtom);
@@ -143,6 +163,11 @@ function useUserActions() {
   // Datos Contacto Personas
   const setDatosContacto = useSetRecoilState(DatosContactoAtom);
   const setDatosContactos = useSetRecoilState(DatosContactosAtom);
+  // Datos Contacto Empresas
+  const setDatosContactoEmpresa = useSetRecoilState(DatosContactoEmpresaAtom);
+  const setDatosContactosEmpresas = useSetRecoilState(
+    DatosContactosEmpresasAtom
+  );
   // Institutiones
   const setInstitucion = useSetRecoilState(InstitucionAtom);
   const setInstituciones = useSetRecoilState(InstitucionesAtom);
@@ -155,6 +180,9 @@ function useUserActions() {
   // Asignacion AFPs
   const setAsignacionAfp = useSetRecoilState(AsignacionAfpAtom);
   const setAsignacionAfps = useSetRecoilState(AsignacionAfpsAtom);
+  // Asignacion Gestora
+  const setAsignacionGestora = useSetRecoilState(AsigancionGestoraAtom);
+  const setAsignacionGestoras = useSetRecoilState(AsigancionGestorasAtom);
   // Bancos
   const setBancos = useSetRecoilState(BancosAtom);
   const setBanco = useSetRecoilState(BancoAtom);
@@ -221,6 +249,19 @@ function useUserActions() {
   // Monto Ufv
   const setMonteUfv = useSetRecoilState(MontoUfvAtom);
   const setMontUfvs = useSetRecoilState(MontoUfvsAtom);
+  // Gestión de Organizacion
+  // Tipo Areas
+  const setTipoArea = useSetRecoilState(TipoAreaAtom);
+  const setTiposAreas = useSetRecoilState(TiposAreasAtom);
+  // Áreas
+  const setArea = useSetRecoilState(AreaAtom);
+  const setAreas = useSetRecoilState(AreasAtom);
+  // Cargos
+  const setCargo=useSetRecoilState(CargoAtom);
+  const setCargos=useSetRecoilState(CargosAtom);
+  // Centro Costos
+  const setCentroCosto=useSetRecoilState(CentroCostoAtom);
+  const setCentrosCostos=useSetRecoilState(CentrosCostosAtom);
 
   return {
     login,
@@ -318,6 +359,16 @@ function useUserActions() {
     deleteDatosContacto,
     resetDatosContacto: useResetRecoilState(DatosContactoAtom),
     resetDatosContactos: useResetRecoilState(DatosContactosAtom),
+    // Datos Contacto Empresa
+    registrarDatosContactoEmpresa,
+    getDatosContactosEmpresas,
+    getDatosContactoEmpresaById,
+    updateDatosContactoEmpresa,
+    deleteDatosContactoEmpresa,
+    resetDatosContactoEmpresa: useResetRecoilState(DatosContactoEmpresaAtom),
+    resetDatosContactosEmpresas: useResetRecoilState(
+      DatosContactosEmpresasAtom
+    ),
     // Instituciones
     registrarInstitucion,
     getInstituciones,
@@ -350,6 +401,14 @@ function useUserActions() {
     deleteAsignacionAfp,
     resetAsignacionAfp: useResetRecoilState(AsignacionAfpAtom),
     resetAsignacionAfps: useResetRecoilState(AsignacionAfpsAtom),
+    // Asignacion Gestora
+    registrarAsignacionGestora,
+    getAsignacionGestoras,
+    getAsignacionGestoraById,
+    updateAsignacionGestora,
+    deleteAsignacionGestora,
+    resetAsignacionGestora: useResetRecoilState(AsigancionGestoraAtom),
+    resetAsignacionGestoras: useResetRecoilState(AsigancionGestoraAtom),
     // Bancos
     registrarBanco,
     getBancos,
@@ -504,11 +563,44 @@ function useUserActions() {
     deleteMontoUfv,
     resetMontoUfv: useResetRecoilState(MontoUfvAtom),
     resetMontoUfvs: useResetRecoilState(MontoUfvsAtom),
+    // Gestión de la Organización
+    // Tipos de Areas
+    registrarTipoArea,
+    getTiposAreas,
+    getTipoAreaById,
+    updateTipoArea,
+    deleteTipoArea,
+    resetTipoArea: useResetRecoilState(TipoAreaAtom),
+    resetTiposAreas: useResetRecoilState(TiposAreasAtom),
+    // Áreas
+    registrarArea,
+    getAreas,
+    getAreaById,
+    updateArea,
+    deleteArea,
+    resetArea: useResetRecoilState(AreaAtom),
+    resetAreas: useResetRecoilState(AreasAtom),
+    // Cargo
+    registrarCargo,
+    getCargos,
+    getCargoById,
+    updateCargo,
+    deleteCargo,
+    resetCargo: useResetRecoilState(CargoAtom),
+    resetCargos: useResetRecoilState(CargosAtom),
+    // Centro Costos
+    registrarCentroCosto,
+    getCentrosCostos,
+    getCentroCostoById,
+    updateCentroCosto,
+    deleteCentroCosto,
+    resetCentroCosto: useResetRecoilState(CentroCostoAtom),
+    reserCentrosCostos: useResetRecoilState(CentrosCostosAtom),
   };
 
   function login({ username, password }) {
     return fetchWrapper
-      .post(`${baseUrl}`, { username, password })
+      .post(`${baseUrl}/Authenticate`, { username, password })
       .then((user) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem("user", JSON.stringify(user));
@@ -519,18 +611,18 @@ function useUserActions() {
         history.push(from);
       });
   }
-  function loginKeycloak({username, password}) {
+  function loginKeycloak({ username, password }) {
     const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: `grant_type=password&client_id=colmena-webapi&client_secret=uHcrT3i2PlD74iqk9cliQjPzyu1VYdSJ&username=${encodeURIComponent(
+      body: `grant_type=password&client_id=colmena-webapi&client_secret=kHe2bZJokpQ4v0cjvntIn75NStuvaWcg&username=${encodeURIComponent(
         username
       )}&password=${encodeURIComponent(password)}`,
     };
     return fetch(
-      "https://keycloakcolmena.azurewebsites.net/auth/realms/COLMENA/protocol/openid-connect/token",
+      "http://localhost:8080/realms/ColmenaRealm/protocol/openid-connect/token",
       requestOptions
     )
       .then(handleResponse)
@@ -540,9 +632,16 @@ function useUserActions() {
         const username = decodedToken.preferred_username;
         const user = {
           token: data.access_token,
+          idkeycloak: decodedToken.sub,
+          organizacion: decodedToken.azp,
           roles: roles,
           username: username,
+          name: decodedToken.name,
+          nombre: decodedToken.given_name,
+          apeliido: decodedToken.family_name,
         };
+        // Refresh
+        const decodedTokenRefresh = jwtDecode(data.refresh_token);
         localStorage.setItem("user", JSON.stringify(user));
         setAuth(user);
         console.log(user);
@@ -631,7 +730,7 @@ function useUserActions() {
     return fetchWrapper.post(`${personasApiUrl}`, persona);
   }
   function getPersonas() {
-    return fetchWrapper.get(personasApiUrl).then(setPersonas);
+    return fetchWrapper.get(`${personasApiUrl}`).then(setPersonas);
   }
   function getPersonasId(id) {
     return fetchWrapper.get(`${personasApiUrl}/${id}`).then(setPersona);
@@ -713,7 +812,7 @@ function useUserActions() {
     return fetchWrapper.get(empleadosApiUrl).then(setEmpleados);
   }
   function getEmpleadosVacaciones() {
-    return fetchWrapper.get(`${empleadosApiUrl}/vacaiones`).then(setEmpleados);
+    return fetchWrapper.get(`${empleadosApiUrl}/vacaciones`).then(setEmpleados);
   }
   function getEmpleadosId(id) {
     return fetchWrapper.get(`${empleadosApiUrl}/${id}`).then(setEmpleado);
@@ -934,6 +1033,46 @@ function useUserActions() {
         setDatosContactos((contactos) => contactos.filter((x) => x.id !== id));
       });
   }
+  // CRUD Datos Contacto Empresa
+  function registrarDatosContactoEmpresa(datosContactoEmpresa) {
+    return fetchWrapper.post(
+      `${datosContactoEmpresaApiUrl}`,
+      datosContactoEmpresa
+    );
+  }
+
+  function getDatosContactosEmpresas() {
+    return fetchWrapper
+      .get(datosContactoEmpresaApiUrl)
+      .then(setDatosContactosEmpresas);
+  }
+
+  function getDatosContactoEmpresaById(id) {
+    return fetchWrapper
+      .get(`${datosContactoEmpresaApiUrl}/${id}`)
+      .then(setDatosContactoEmpresa);
+  }
+
+  function updateDatosContactoEmpresa(id, params) {
+    return fetchWrapper.put(`${datosContactoEmpresaApiUrl}/${id}`, params);
+  }
+
+  async function deleteDatosContactoEmpresa(id) {
+    setDatosContactosEmpresas((datosContactoEmpresas) =>
+      datosContactoEmpresas.map((x) => {
+        if (x.id === id) return { ...x, isDeleting: true };
+        return x;
+      })
+    );
+    await fetchWrapper
+      .delete(`${datosContactoEmpresaApiUrl}/${id}`)
+      .then(() => {
+        setDatosContactosEmpresas((datosContactoEmpresas) =>
+          datosContactoEmpresas.filter((x) => x.id !== id)
+        );
+      });
+  }
+
   // CRUD Instituciones
   function registrarInstitucion(institucion) {
     return fetchWrapper.post(`${institucionesApisUrl}`, institucion);
@@ -1050,6 +1189,39 @@ function useUserActions() {
       setAsignacionAfps((asignacion) => asignacion.filter((x) => x.id !== id));
     });
   }
+  // CRUD Asignacion Gestora
+  function registrarAsignacionGestora(asignacionGestora) {
+    return fetchWrapper.post(`${asignacionGestoraUrl}`, asignacionGestora);
+  }
+
+  function getAsignacionGestoras() {
+    return fetchWrapper.get(asignacionGestoraUrl).then(setAsignacionGestoras);
+  }
+
+  function getAsignacionGestoraById(id) {
+    return fetchWrapper
+      .get(`${asignacionGestoraUrl}/${id}`)
+      .then(setAsignacionGestora);
+  }
+
+  function updateAsignacionGestora(id, params) {
+    return fetchWrapper.put(`${asignacionGestoraUrl}/${id}`, params);
+  }
+
+  async function deleteAsignacionGestora(id) {
+    setAsignacionGestoras((asignacion) =>
+      asignacion.map((x) => {
+        if (x.id === id) return { ...x, isDeleting: true };
+        return x;
+      })
+    );
+    await fetchWrapper.delete(`${asignacionGestoraUrl}/${id}`).then(() => {
+      setAsignacionGestoras((asignacion) =>
+        asignacion.filter((x) => x.id !== id)
+      );
+    });
+  }
+
   // Bancos
   function registrarBanco(banco) {
     return fetchWrapper.post(`${bancoApiUrl}`, banco);
@@ -1543,4 +1715,131 @@ function useUserActions() {
       setMontUfvs((monto) => monto.filter((x) => x.id !== id));
     });
   }
+  // Gestión de la Organización
+  // CRUD Tipo de Área
+  function registrarTipoArea(tipoArea) {
+    return fetchWrapper.post(`${tipoAreaApiUrl}`, tipoArea);
+  }
+
+  function getTiposAreas() {
+    return fetchWrapper.get(tipoAreaApiUrl).then(setTiposAreas);
+  }
+
+  function getTipoAreaById(id) {
+    return fetchWrapper.get(`${tipoAreaApiUrl}/${id}`).then(setTipoArea);
+  }
+
+  function updateTipoArea(id, params) {
+    return fetchWrapper.put(`${tipoAreaApiUrl}/${id}`, params);
+  }
+
+  async function deleteTipoArea(id) {
+    setTiposAreas((tiposAreas) =>
+      tiposAreas.map((x) => {
+        if (x.id === id) return { ...x, isDeleting: true };
+        return x;
+      })
+    );
+    await fetchWrapper.delete(`${tipoAreaApiUrl}/${id}`).then(() => {
+      setTiposAreas((tiposAreas) => tiposAreas.filter((x) => x.id !== id));
+    });
+  }
+  // CRUD Área
+  function registrarArea(area) {
+    return fetchWrapper.post(`${areasApiUrl}`, area);
+  }
+  
+  function getAreas() {
+    return fetchWrapper.get(areasApiUrl).then(setAreas);
+  }
+  
+  function getAreaById(id) {
+    return fetchWrapper
+      .get(`${areasApiUrl}/${id}`)
+      .then(setArea);
+  }
+  
+  function updateArea(id, params) {
+    return fetchWrapper.put(`${areasApiUrl}/${id}`, params);
+  }
+  
+  async function deleteArea(id) {
+    setAreas((areas) =>
+      areas.map((x) => {
+        if (x.id === id) return { ...x, isDeleting: true };
+        return x;
+      })
+    );
+    await fetchWrapper.delete(`${areasApiUrl}/${id}`).then(() => {
+      setAreas((areas) =>
+        areas.filter((x) => x.id !== id)
+      );
+    });
+  }
+  // CRUD Cargo
+  function registrarCargo(cargo) {
+    return fetchWrapper.post(`${cargosApiUrl}`, cargo);
+  }
+  
+  function getCargos() {
+    return fetchWrapper.get(cargosApiUrl).then(setCargos);
+  }
+  
+  function getCargoById(id) {
+    return fetchWrapper
+      .get(`${cargosApiUrl}/${id}`)
+      .then(setCargo);
+  }
+  
+  function updateCargo(id, params) {
+    return fetchWrapper.put(`${cargosApiUrl}/${id}`, params);
+  }
+  
+  async function deleteCargo(id) {
+    setCargos((cargos) =>
+      cargos.map((x) => {
+        if (x.id === id) return { ...x, isDeleting: true };
+        return x;
+      })
+    );
+    await fetchWrapper.delete(`${cargosApiUrl}/${id}`).then(() => {
+      setCargos((cargos) =>
+        cargos.filter((x) => x.id !== id)
+      );
+    });
+  }
+  // CRUD Centro Costos
+  function registrarCentroCosto(centroCosto) {
+    return fetchWrapper.post(`${centroCostoApiUrl}`, centroCosto);
+  }
+  
+  function getCentrosCostos() {
+    return fetchWrapper.get(centroCostoApiUrl).then(setCentrosCostos);
+  }
+  
+  function getCentroCostoById(id) {
+    return fetchWrapper
+      .get(`${centroCostoApiUrl}/${id}`)
+      .then(setCentroCosto);
+  }
+  
+  function updateCentroCosto(id, params) {
+    return fetchWrapper.put(`${centroCostoApiUrl}/${id}`, params);
+  }
+  
+  async function deleteCentroCosto(id) {
+    setCentrosCostos((centrosCostos) =>
+      centrosCostos.map((x) => {
+        if (x.id === id) return { ...x, isDeleting: true };
+        return x;
+      })
+    );
+    await fetchWrapper.delete(`${centroCostoApiUrl}/${id}`).then(() => {
+      setCentrosCostos((centrosCostos) =>
+        centrosCostos.filter((x) => x.id !== id)
+      );
+    });
+  }
+  
+  
 }

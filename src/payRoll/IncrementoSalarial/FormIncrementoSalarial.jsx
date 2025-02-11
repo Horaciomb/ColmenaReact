@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { authAtom } from "_state";
 import { useAlertActions } from "_actions";
 export { FormIncrementoSalarial };
 const categorias = [
@@ -13,6 +12,8 @@ const categorias = [
   { id: 4, label: "Asistentes/Operadores" },
 ];
 function FormIncrementoSalarial() {
+  const auth = useRecoilValue(authAtom);
+  const token = auth?.token;
   const baseUrl = `${process.env.REACT_APP_API_URL}/IncrementoSalarials`;
   const [categoriasSeleccinadas, setCategoriasSeleccinadas] = useState([]);
   const [cuerpo, setCuerpo] = useState({
@@ -23,6 +24,7 @@ function FormIncrementoSalarial() {
     fechaEfectuar: "",
   });
   const alertActions = useAlertActions();
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
     const newValue = e.target.type === "checkbox" ? checked : value;
@@ -31,8 +33,8 @@ function FormIncrementoSalarial() {
       [name]: newValue,
       categorias: categoriasSeleccinadas,
     });
-    console.log(cuerpo);
-    console.log(categoriasSeleccinadas);
+    //console.log(cuerpo);
+    //console.log(categoriasSeleccinadas);
   };
   const handleCheckboxChange = (e) => {
     const id = parseInt(e.target.value, 10);
@@ -48,20 +50,26 @@ function FormIncrementoSalarial() {
       ...cuerpo,
       categorias: categoriasSeleccinadas,
     });
-    console.log(categoriasSeleccinadas);
+    //console.log(categoriasSeleccinadas);
   };
   const postCuerpo = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     axios
       .post(baseUrl, cuerpo, {
-        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+        },
         ContentType: "application/json",
         responseType: "arraybuffer", // important
       })
-      .catch((err) => console.log(err));
-
-    console.log(cuerpo);
-    alertActions.success("Incremento Salarial Procesado");
+      .then(() => {
+        alertActions.success("Incremento Salarial Procesado");
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   return (
     <div>
@@ -128,8 +136,8 @@ function FormIncrementoSalarial() {
         </Row>
         <Row>
           <Col>
-            <Button variant="success" onClick={postCuerpo}>
-              Procesar
+            <Button variant="success" onClick={postCuerpo} disabled={isLoading}>
+              {isLoading ? "Procesando..." : "Procesar"}
             </Button>
           </Col>
         </Row>

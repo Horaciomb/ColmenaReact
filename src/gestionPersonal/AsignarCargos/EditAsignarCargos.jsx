@@ -13,6 +13,7 @@ import client, {
   GET_CARGOS_QUERY,
   GET_EMPLEADOS_QUERY,
 } from "../../grafql/graphql";
+import dayjs from "dayjs";
 export { EditAsignarCargos };
 function EditAsignarCargos({ history, match }) {
   const { id } = match.params;
@@ -88,7 +89,10 @@ function EditAsignarCargos({ history, match }) {
   }, []);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_CARGOS_QUERY });
+      const result = await client.query({
+        query: GET_CARGOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setCargos(result.data.cargos);
     }
 
@@ -97,7 +101,10 @@ function EditAsignarCargos({ history, match }) {
   }, []);
   useEffect(() => {
     async function getData() {
-      const result = await client.query({ query: GET_EMPLEADOS_QUERY });
+      const result = await client.query({
+        query: GET_EMPLEADOS_QUERY,
+        fetchPolicy: "network-only",
+      });
       setEmpleados(result.data.empleados);
     }
 
@@ -107,9 +114,12 @@ function EditAsignarCargos({ history, match }) {
   useEffect(() => {
     // set default form values after user set in recoil state (in edit mode)
     if (dato) {
-      reset(dato);
+      reset({
+        ...dato,
+        fechaInicio: dayjs(dato.fechaInicio).format("YYYY-MM-DD"),
+        fechaFin: dayjs(dato.fechaFin).format("YYYY-MM-DD"),
+      });
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dato]);
   useEffect(() => {

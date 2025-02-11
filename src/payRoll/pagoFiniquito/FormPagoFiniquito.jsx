@@ -4,15 +4,18 @@ import { useRecoilValue } from "recoil";
 import { empleadosAtom } from "_state";
 import { useUserActions } from "_actions";
 import axios from "axios";
-
+import { authAtom } from "_state";
 export { FormPagoFiniquito };
 function FormPagoFiniquito() {
+  const auth = useRecoilValue(authAtom);
+  const token = auth?.token;
   const baseUrl = `${process.env.REACT_APP_API_URL}/PagoFiniquito/PagoFiniquitoEmpleadoWord`;
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [cuerpo, setCuerpo] = useState({
     EmpresaId: "1",
     EmpleadoId: "1",
@@ -134,50 +137,53 @@ function FormPagoFiniquito() {
     });
     console.log(cuerpo);
   };
-  const postCuerpo = (e) => {
+  const postCuerpo = async (e) => {
     e.preventDefault();
-    axios
-      .post(baseUrl, cuerpo, {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(baseUrl, cuerpo, {
         method: "GET",
-        ContentType: "blob",
-        responseType: "arraybuffer", // important
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-          "download",
-          `Finiquito ${empleadoSeleccionada.persona.nombre}  Banca de Talentos S.R.L .docx`
-        );
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch((err) => console.log(err));
+        headers: {
+          Authorization: `Bearer ${token}`, // Añade el token al encabezado de autorización
+        },
+        responseType: "arraybuffer", // Importante
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `Finiquito ${empleadoSeleccionada.persona.nombre}  Banca de Talentos S.R.L .docx`
+      );
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      console.log("Error fetching data", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
-      <Form>
+      <Form onSubmit={postCuerpo}>
         <Row>
-          <Col className="my-1">
+          <Col xs={12} md={6} className="my-1">
             <Form.Group className="mb-3">
               <Form.Label>Empresa seleccionada</Form.Label>
               <Form.Control placeholder="Banca de Talentos S.R.L" disabled />
             </Form.Group>
           </Col>
-          <Col>
+          <Col xs={12} md={6}>
             <Form.Group className="mb-3" controlId="formBasicFechaFin">
               <Form.Label>Empleado</Form.Label>
               <Row>
-                <Col sm={9}>
+                <Col xs={8} sm={9}>
                   <Form.Control
                     disabled
-                    value={empleadoSeleccionada.persona.nombre}
-                    //onChange={handleChange}
-                    //name="EmpleadoId"
+                    value={`${empleadoSeleccionada.persona.nombre} ${empleadoSeleccionada.persona.apellidoPaterno}`}
                   />
                 </Col>
-                <Col sm={1}>
+                <Col xs={4} sm={3}>
                   <Button variant="info" onClick={handleShow}>
                     Buscar
                   </Button>
@@ -185,7 +191,9 @@ function FormPagoFiniquito() {
               </Row>
             </Form.Group>
           </Col>
-          <Col>
+        </Row>
+        <Row>
+          <Col xs={12} md={6} className="my-1">
             <Form.Group className="mb-3" controlId="formBasicFechaFin">
               <Form.Label>Fecha Último día Trabajo</Form.Label>
               <Form.Control
@@ -196,9 +204,7 @@ function FormPagoFiniquito() {
               />
             </Form.Group>
           </Col>
-        </Row>
-        <Row>
-          <Col className="my-1">
+          <Col xs={12} md={6} className="my-1">
             <Form.Group className="mb-3">
               <Form.Label>Motivo</Form.Label>
               <Form.Select
@@ -215,9 +221,11 @@ function FormPagoFiniquito() {
               </Form.Select>
             </Form.Group>
           </Col>
-          <Col className="my-1">
+        </Row>
+        <Row>
+          <Col xs={12} md={6} className="my-1">
             <Form.Group className="mb-3">
-              <Form.Label>Metodo de Pago</Form.Label>
+              <Form.Label>Método de Pago</Form.Label>
               <Form.Select
                 className="custom-select mr-sm-2"
                 value={cuerpo.MetodoPago}
@@ -229,7 +237,7 @@ function FormPagoFiniquito() {
               </Form.Select>
             </Form.Group>
           </Col>
-          <Col className="my-1">
+          <Col xs={12} md={6} className="my-1">
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <Form.Label>Doble Aguinaldo</Form.Label>
               <Form.Check
@@ -272,14 +280,13 @@ function FormPagoFiniquito() {
           </Col>
 
           <Col className="my-3">
-            
             <Card>
               <Card.Header>Deducciones</Card.Header>
               <Card.Body>
                 {cuerpo.deducciones.map((deduccion, index) => (
                   <Form.Group className="mb-3" key={index}>
                     <Row>
-                      <Col sm={9}>
+                      <Col sm={10}>
                         <Form.Label>Glosa</Form.Label>
                         <Form.Control
                           type="text"
@@ -295,7 +302,7 @@ function FormPagoFiniquito() {
                           onChange={(e) => handleDeduccionesChange(e, index)}
                         />
                       </Col>
-                      <Col sm={1}>
+                      <Col sm={3}>
                         <br />
                         {index > 0 && (
                           <Button
@@ -310,7 +317,7 @@ function FormPagoFiniquito() {
                   </Form.Group>
                 ))}
                 {cuerpo.deducciones.length <= 2 ? (
-                  <Button variant="outline-info" onClick={addDeduccion}>
+                  <Button variant="outline-info" onClick={addDeduccion} block>
                     Agregar deducción
                   </Button>
                 ) : null}
@@ -319,23 +326,29 @@ function FormPagoFiniquito() {
           </Col>
         </Row>
         <Row>
-          <Col>
-            <Button variant="success" onClick={postCuerpo}>
-              Imprimir
+          <Col xs={12}>
+            <Button type="submit" variant="success" disabled={isLoading} block>
+              {isLoading ? "Cargando..." : "Imprimir"}
             </Button>
           </Col>
         </Row>
       </Form>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header >
           <Modal.Title>Buscar Empleado</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ maxHeight: "400px", overflowY: "auto" }}>
           <table className="table table-striped ">
             <thead>
               <tr>
-                <th style={{ width: "100%" }}>Nombre</th>
-                <th style={{ width: "100%" }}>Acción</th>
+                <th style={{ width: "70%" }}>Nombre</th>
+                <th style={{ width: "30%" }}>Acción</th>
               </tr>
             </thead>
             <tbody>
@@ -357,7 +370,7 @@ function FormPagoFiniquito() {
               ))}
               {!empleados && (
                 <tr>
-                  <td colSpan="4" className="text-center">
+                  <td colSpan="2" className="text-center">
                     <span className="spinner-border spinner-border-lg align-center"></span>
                   </td>
                 </tr>

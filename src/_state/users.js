@@ -76,15 +76,15 @@ const SubsidiosAtom = atom({
   key: "subsidios",
   default: null,
 });
-const VacacionAtom=atom({
+const VacacionAtom = atom({
   key: "vacacion",
   default: null,
-})
+});
 const VacacionesAtom = atom({
   key: "vacaciones",
   default: null,
 });
-const DatosContactoAtom=atom({
+const DatosContactoAtom = atom({
   key: "datosContacto",
   default: null,
 });
@@ -92,28 +92,44 @@ const DatosContactosAtom = atom({
   key: "datosContactos",
   default: null,
 });
-const InstitucionAtom=atom({
+const DatosContactoEmpresaAtom = atom({
+  key: "datosContactoEmpresa",
+  default: null,
+});
+const DatosContactosEmpresasAtom = atom({
+  key: "datosContactosEmpresas",
+  default: null,
+});
+const InstitucionAtom = atom({
   key: "institucion",
   default: null,
 });
-const InstitucionesAtom=atom({
+const InstitucionesAtom = atom({
   key: "instituciones",
   default: null,
 });
-const FormacionAtom=atom({
+const FormacionAtom = atom({
   key: "formacion",
   default: null,
 });
-const FormacionesAtom=atom({
+const FormacionesAtom = atom({
   key: "formaciones",
   default: null,
 });
-const AsignacionAfpAtom=atom({
+const AsignacionAfpAtom = atom({
   key: "asignacionAfp",
   default: null,
 });
-const AsignacionAfpsAtom=atom({
+const AsignacionAfpsAtom = atom({
   key: "asignacionAfps",
+  default: null,
+});
+const AsigancionGestoraAtom = atom({
+  key: "asigancionGestora",
+  default: null,
+});
+const AsigancionGestorasAtom = atom({
+  key: "asigancionGestoras",
   default: null,
 });
 // Gestionar Novedades
@@ -238,31 +254,63 @@ const SueldosAtom = atom({
   key: "Sueldos",
   default: null,
 });
-const ExpLaboralAtom=atom ({
+const ExpLaboralAtom = atom({
   key: "espLaboral",
   default: null,
-})
+});
 const ExpLaboralesAtom = atom({
   key: "expLaborales",
   default: null,
 });
-const BancoAtom=atom({
+const BancoAtom = atom({
   key: "banco",
-  default : null,
+  default: null,
 });
-const BancosAtom=atom({
+const BancosAtom = atom({
   key: "bancos",
-  default : null,
+  default: null,
 });
-const CuentaBancariaAtom=atom({
+const CuentaBancariaAtom = atom({
   key: "cuentaBancaria",
-  default : null,
+  default: null,
 });
-const CuentasBancariasAtom=atom({
+const CuentasBancariasAtom = atom({
   key: "cuentasBancarias",
-  default : null,
+  default: null,
 });
-
+// Gestión de la Organización
+const TipoAreaAtom = atom({
+  key: "tipoArea",
+  default: null,
+});
+const TiposAreasAtom = atom({
+  key: "tiposAreas",
+  default: null,
+});
+const AreaAtom = atom({
+  key: "area",
+  default: null,
+});
+const AreasAtom = atom({
+  key: "areas",
+  default: null,
+});
+const CargoAtom= atom({
+  key: "cargo",
+  default: null,
+})
+const CargosAtom = atom({
+  key: "cargos",
+  default: null,
+});
+const CentroCostoAtom =atom({
+  key:"centroCosto",
+  default: null,
+})
+const CentrosCostosAtom = atom({
+  key:"centrosCostos",
+  default: null,
+})
 export {
   usersAtom,
   userAtom,
@@ -317,6 +365,8 @@ export {
   SueldoAtom,
   DatosContactoAtom,
   DatosContactosAtom,
+  DatosContactoEmpresaAtom,
+  DatosContactosEmpresasAtom,
   InstitucionAtom,
   InstitucionesAtom,
   FormacionAtom,
@@ -325,8 +375,19 @@ export {
   ExpLaboralesAtom,
   AsignacionAfpAtom,
   AsignacionAfpsAtom,
+  AsigancionGestoraAtom,
+  AsigancionGestorasAtom,
   BancoAtom,
   BancosAtom,
   CuentaBancariaAtom,
   CuentasBancariasAtom,
+  // Gestión de Organización
+  TipoAreaAtom,
+  TiposAreasAtom,
+  AreaAtom,
+  AreasAtom,
+  CargoAtom,
+  CargosAtom,
+  CentroCostoAtom,
+  CentrosCostosAtom,
 };

@@ -1,19 +1,37 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import TablaCrud from "_components/TablaCrud";
+import { useUserActions } from "_actions";
 import { useRecoilValue } from "recoil";
 import { VacacionesAtom } from "_state";
-import { useUserActions } from "_actions";
 export { ListaVacaciones };
 function ListaVacaciones({ match }) {
   const { path } = match;
-  const ingresos = useRecoilValue(VacacionesAtom);
+  const vacaciones = useRecoilValue(VacacionesAtom);
   const userActions = useUserActions();
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    if (vacaciones) {
+      const datosTransformados = transformarDatos(vacaciones);
+      setData(datosTransformados);
+    }
+  }, [vacaciones]);
   useEffect(() => {
     userActions.getVacaciones();
-    return userActions.resetVacaciones();
+    return userActions.resetVacaciones;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function transformarDatos(datos) {
+    return datos.map((vacacion, index) => ({
+      id: vacacion.id,
+      index: index + 1,
+      empleado: `${vacacion.empleado.persona.nombre} ${vacacion.empleado.persona.apellidoPaterno} ${vacacion.empleado.persona.apellidoMaterno}`,
+      diasTomados: vacacion.diasTomados,
+      fechaInicio: formatDate(vacacion.fechaInicio),
+    }));
+  }
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -21,73 +39,38 @@ function ListaVacaciones({ match }) {
     const year = date.getFullYear().toString();
     return `${day}-${month}-${year}`;
   }
+
+  const columns = [
+    {
+      header: "Empleado",
+      accessorKey: "empleado",
+    },
+    {
+      header: "Días Tomados",
+      accessorKey: "diasTomados",
+    },
+    {
+      header: "Fecha de Inicio",
+      accessorKey: "fechaInicio",
+    },
+  ];
+
+  const handleClick = (id) => {
+    return userActions.deleteVacacion(id);
+  };
   return (
     <div>
       <h1>Gestionar Vacaciones </h1>
       <Link to={`${path}/add`} className="btn btn-sm btn-success mb-2">
         Agregar Vacaciones
       </Link>
-      <div
-        style={{
-          maxheight: "450px",
-          //maxWidth: "1000px",
-          overflow: "auto",
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-          marginRight: "10px",
-        }}
-      >
-        <table className="table table-striped ">
-          <thead>
-            <tr>
-              <th style={{ width: "5%" }}>#</th>
-              <th style={{ width: "40%" }}>Empleado</th>
-              <th style={{ width: "20%" }}>Dias Tomados</th>
-              <th style={{ width: "20%" }}>Fecha </th>
-              <th style={{ width: "10%" }}>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ingresos?.map((ingreso, index) => (
-              <tr key={ingreso.id}>
-                <td>{index + 1}</td>
-                <td>
-                  {ingreso.empleado.persona.nombre}{" "}
-                  {ingreso.empleado.persona.apellidoPaterno}{" "}
-                  {ingreso.empleado.persona.apellidoMaterno}
-                </td>
-                <td>{ingreso.diasTomados}</td>
-                <td>{formatDate(ingreso.fechaInicio)}</td>
-                <td style={{ whiteSpace: "nowrap" }}>
-                  <Link
-                    to={`${path}/edit/${ingreso.id}`}
-                    className="btn btn-sm btn-primary mr-1"
-                  >
-                    Editar
-                  </Link>
-                  <button
-                    onClick={() => userActions.deleteVacacion(ingreso.id)}
-                    className="btn btn-sm btn-danger"
-                    disabled={ingreso.isDeleting}
-                  >
-                    {ingreso.isDeleting ? (
-                      <span className="spinner-border spinner-border-sm"></span>
-                    ) : (
-                      <span>Eliminar</span>
-                    )}
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {!ingresos && (
-              <tr>
-                <td colSpan="4" className="text-center">
-                  <span className="spinner-border spinner-border-lg align-center"></span>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <TablaCrud
+        data={data}
+        columns={columns}
+        datos={vacaciones}
+        path={path}
+        handleClick={handleClick}
+      />
     </div>
   );
 }

@@ -12,6 +12,7 @@ import client, {
   GET_EXPERIENCIA_LABORAL_VARIABLES,
   GET_PERSONAS_QUERY,
 } from "../../grafql/graphql";
+import dayjs from "dayjs";
 export { AddEditExperienciLaboral };
 function AddEditExperienciLaboral({ history, match }) {
   const { id } = match.params;
@@ -88,6 +89,7 @@ function AddEditExperienciLaboral({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_PERSONAS_QUERY,
+        fetchPolicy: "network-only",
       });
       setPersonas(result.data.personas);
     }
@@ -98,6 +100,7 @@ function AddEditExperienciLaboral({ history, match }) {
     async function getData() {
       const result = await client.query({
         query: GET_EXPERIENCIA_LABORAL_VARIABLES,
+        fetchPolicy: "network-only",
       });
       setEmpresas(result.data.empresas);
       setMotivosBaja(result.data.motivoBajas);
@@ -161,7 +164,10 @@ function AddEditExperienciLaboral({ history, match }) {
   }, [mode.edit, aporte]);
   useEffect(() => {
     if (mode.edit && aporte) {
-      reset(aporte);
+      reset({
+        ...aporte,
+        fecha: dayjs(aporte.fecha).format("YYYY-MM-DD"), // Formatear la fecha para el campo de fecha
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aporte]);

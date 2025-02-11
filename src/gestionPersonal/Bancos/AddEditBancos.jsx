@@ -88,8 +88,7 @@ function AddEditBancos({ history, match }) {
 
   const loading = mode.edit && !dato;
   return (
-    <>
-      <h1>{mode.add ? "Agregar Banco" : "Editar Banco"}</h1>
+    <div>
       {!loading && (
         <Form>
           <Row>
@@ -154,6 +153,6 @@ function AddEditBancos({ history, match }) {
           <span className="spinner-border spinner-border-lg align-center"></span>
         </div>
       )}
-    </>
+    </div>
   );
 }
